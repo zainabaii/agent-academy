@@ -1,6 +1,6 @@
 /* ============================================================
    AI ACADEMY — Netlify Serverless Function
-   Chatbot API via Groq API (llama-3.3-70b-versatile)
+   Chatbot API via Groq API (openai/gpt-oss-20b)
    ============================================================ */
 
 exports.handler = async (event, context) => {
@@ -133,7 +133,7 @@ async function callGroqAPI(messages, systemInstruction, stream, apiKey) {
   });
 
   const body = {
-    model: 'llama-3.3-70b-versatile',
+    model: 'openai/gpt-oss-20b',
     messages: formattedMessages,
     temperature: 0.7,
     max_tokens: 4096,
