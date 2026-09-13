@@ -9,15 +9,15 @@
   <meta property="og:type" content="website" />
   <title>AI Academy — Intelligent Learning Workspace</title>
 
-  <!-- Fonts -->
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <!-- Marked.js for Markdown rendering -->
   <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
 
-  <!-- CSS -->
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="css/design.css" />
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
@@ -28,14 +28,17 @@
 
   <div id="app">
 
-    <!-- ─── COMPACT LEFT SIDEBAR ─────────────────────────────── -->
+    <!-- ─── DARK NAVY SIDEBAR ─────────────────────────────────── -->
     <aside id="app-sidebar" aria-label="Sidebar navigation">
 
       <!-- Header & Brand Logo -->
       <div class="sidebar-header">
         <a href="#" class="sidebar-logo" onclick="UI.switchView('chat');return false;">
           <div class="sidebar-logo-icon">AI</div>
-          <span>AI Academy</span>
+          <div class="sidebar-logo-text">
+            <span class="sidebar-logo-title">AI Academy</span>
+            <span class="sidebar-logo-sub">Intelligent Learning</span>
+          </div>
         </a>
       </div>
 
@@ -45,62 +48,70 @@
         <span>New Chat</span>
       </button>
 
-      <!-- Main Navigation -->
-      <nav class="sidebar-nav" aria-label="Navigation">
+      <!-- Main Navigation Links -->
+      <nav class="sidebar-nav" aria-label="Main Navigation">
+        <div class="sidebar-section-divider">MAIN</div>
+
         <button class="sidebar-nav-item active" data-view="chat" id="nav-chat">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span>Chat Workspace</span>
+          <span>AI Tutor Workspace</span>
         </button>
+
         <button class="sidebar-nav-item" data-view="landing" id="nav-landing">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           <span>Overview</span>
         </button>
+
         <button class="sidebar-nav-item" data-view="progress" id="nav-progress">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           <span>My Progress</span>
         </button>
+
         <button class="sidebar-nav-item" data-view="roadmap" id="nav-roadmap">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-          <span>Roadmap</span>
+          <span>Learning Roadmap</span>
         </button>
       </nav>
 
-      <!-- Recent Conversations -->
+      <!-- Recent Conversations History -->
       <div class="sidebar-history-section">
-        <div class="sidebar-section-title">Recent Conversations</div>
+        <div class="sidebar-section-divider">RECENT CHATS</div>
         <div id="chat-history-list"></div>
       </div>
 
-      <!-- Footer Settings -->
+      <!-- Footer Settings & Profile -->
       <div class="sidebar-footer">
         <button class="sidebar-nav-item" data-view="settings" id="nav-settings">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span>Settings</span>
+          <span>Settings & Preferences</span>
         </button>
       </div>
 
     </aside>
 
-    <!-- ─── MAIN WORKSPACE (FULL WIDTH) ────────────────────────── -->
+    <!-- ─── MAIN WORKSPACE ────────────────────────────────────── -->
     <main id="app-main" role="main">
 
-      <!-- ══ CHAT WORKSPACE VIEW (HERO FOCUS) ═════════════════ -->
+      <!-- ══ CHAT WORKSPACE VIEW (AI TUTOR) ═════════════════════ -->
       <section id="view-chat" class="view-panel active">
 
-        <!-- Workspace Header -->
+        <!-- Top Header Bar -->
         <header class="chat-workspace-header">
           <div class="chat-title-group">
             <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Open sidebar">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
-            <div>
+            <div class="chat-title-badge-group">
               <div class="chat-workspace-title">AI Learning Assistant</div>
-              <div class="chat-workspace-sub">Ask questions, understand concepts, and build your skills</div>
+              <div class="online-status-badge">
+                <span class="online-dot"></span>
+                <span>Online</span>
+              </div>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;gap:12px;">
-            <!-- Compact Difficulty Segmented Control -->
+            <!-- Segmented Difficulty Control -->
             <div class="difficulty-control" id="difficulty-selector">
               <button type="button" class="difficulty-btn" data-level="beginner" title="Simple language & basic examples">Beginner</button>
               <button type="button" class="difficulty-btn active" data-level="normal" title="Balanced academic definition & examples">Normal</button>
@@ -108,18 +119,24 @@
               <button type="button" class="difficulty-btn" data-level="high" title="Expert depth & trade-offs">Expert</button>
             </div>
 
-            <!-- Optional Slide-Over Agent Activity Drawer Trigger -->
+            <!-- Agent Activity Trigger Button -->
             <button type="button" class="ai-activity-trigger-btn" id="ai-activity-btn" title="View AI Agent Workflow">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-              <span>AI Agents</span>
+              <span>AI Workflow</span>
             </button>
+
+            <!-- User Header Profile -->
+            <div style="display:flex;align-items:center;gap:8px;padding-left:8px;border-left:1px solid var(--border);">
+              <div id="header-avatar" style="width:30px;height:30px;border-radius:var(--radius-full);background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;border:1px solid var(--primary-border);">LN</div>
+              <span id="header-name" style="font-size:0.85rem;font-weight:600;color:var(--text-primary);display:none;">Learner</span>
+            </div>
           </div>
         </header>
 
-        <!-- Chat Conversation Messages -->
+        <!-- Conversation Scroll Area -->
         <div id="chat-messages" aria-live="polite" role="log"></div>
 
-        <!-- Chat Input Bar (ChatGPT Style Anchored at Bottom) -->
+        <!-- Sticky Bottom Chat Input Bar -->
         <div id="chat-input-area">
           <div class="chat-input-container">
             <form id="chat-form">
@@ -127,7 +144,7 @@
                 <textarea
                   id="chat-input"
                   name="chat-input"
-                  placeholder="Ask anything about your studies..."
+                  placeholder="Ask your AI Tutor anything... (e.g. 'Explain Python decorators', 'Create a 5-question quiz')"
                   rows="1"
                   autocomplete="off"
                 ></textarea>
@@ -141,57 +158,214 @@
 
       </section>
 
-      <!-- ══ OVERVIEW LANDING VIEW ═════════════════════════════ -->
+      <!-- ══ OVERVIEW DASHBOARD VIEW ════════════════════════════ -->
       <section id="view-landing" class="view-panel">
-        <div style="max-width:760px;margin:0 auto;padding:40px 24px 60px;width:100%;">
-          <div style="margin-bottom:32px;text-align:center;">
-            <h1 style="font-size:1.8rem;margin-bottom:8px;">Welcome to AI Academy</h1>
-            <p style="color:var(--text-muted);">Select your student profile to personalize your AI explanations, roadmaps, and practice quizzes.</p>
+        <div style="max-width:960px;margin:0 auto;padding:36px 24px 60px;width:100%;">
+          
+          <!-- Top Welcome Greeting Banner -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px;">
+            <div>
+              <h1 style="font-size:1.75rem;margin-bottom:4px;">Good afternoon, <span id="landing-welcome-name">Learner</span> 👋</h1>
+              <p style="color:var(--text-secondary);font-size:0.95rem;">Track your performance, practice skills, and ask your AI tutor anything.</p>
+            </div>
+            <button class="btn btn-primary" onclick="UI.switchView('chat')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span>Open AI Workspace</span>
+            </button>
           </div>
 
-          <div class="card" style="margin-bottom:24px;">
-            <div class="label" style="margin-bottom:12px;">Select Profile Type</div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(110px, 1fr));gap:10px;">
-              <div class="user-type-card selected" data-type="student">Student</div>
-              <div class="user-type-card" data-type="college">College</div>
-              <div class="user-type-card" data-type="university">University</div>
+          <!-- Key Metrics Statistics Grid -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;margin-bottom:32px;">
+            <div class="stat-card">
+              <div class="stat-card-icon">💬</div>
+              <div>
+                <div class="stat-card-val" id="stat-messages">0</div>
+                <div class="stat-card-lbl">Messages Sent</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-icon">📝</div>
+              <div>
+                <div class="stat-card-val" id="stat-quizzes">0</div>
+                <div class="stat-card-lbl">Quizzes Taken</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-icon">🎯</div>
+              <div>
+                <div class="stat-card-val" id="stat-goals-count">3</div>
+                <div class="stat-card-lbl">Goals Tracked</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-icon">⚡</div>
+              <div>
+                <div class="stat-card-val" id="stat-overall-progress">65%</div>
+                <div class="stat-card-lbl">Overall Mastery</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Selection Card -->
+          <div class="card" style="margin-bottom:28px;">
+            <div class="label" style="margin-bottom:14px;">Academic & Career Profile</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:12px;">
+              <div class="user-type-card selected" data-type="student">School Student</div>
+              <div class="user-type-card" data-type="college">College Student</div>
+              <div class="user-type-card" data-type="university">University Student</div>
               <div class="user-type-card" data-type="jobseeker">Job Seeker</div>
               <div class="user-type-card" data-type="teacher">Teacher</div>
             </div>
           </div>
 
-          <form id="landing-form">
-            <div class="chat-input-wrap" style="padding:12px;">
-              <textarea id="landing-input" placeholder="What do you want to learn today? e.g., 'Explain Newton second law'" rows="2" style="width:100%;border:none;outline:none;resize:none;font-family:inherit;font-size:0.95rem;"></textarea>
-              <button type="submit" class="btn btn-primary" style="margin-top:8px;">Start Learning →</button>
+          <!-- Search / Prompt Input Card -->
+          <div class="card" style="margin-bottom:32px;">
+            <div class="label" style="margin-bottom:12px;">Ask Your AI Learning Assistant</div>
+            <form id="landing-form">
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <textarea id="landing-input" placeholder="What do you want to learn today? e.g. 'Explain Python decorators with code', 'Newton second law explanation'" rows="2" style="width:100%;border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 16px;outline:none;resize:none;font-family:inherit;font-size:0.95rem;background:var(--bg-base);"></textarea>
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="UI.sendMessage('Explain Python programming fundamentals step by step')">Python Basics</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="UI.sendMessage('Explain Artificial Intelligence and Machine Learning concepts')">AI & ML Core</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="UI.sendMessage('Give me a 5 question quiz on Web Development')">Take Web Quiz</button>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Start Learning →</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Subject Cards Grid -->
+          <div style="margin-bottom:32px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+              <h2 style="font-size:1.15rem;">Core Learning Subjects</h2>
+              <button class="btn btn-secondary btn-sm" onclick="UI.switchView('progress')">View All Progress</button>
             </div>
-          </form>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:16px;">
+              <!-- Python -->
+              <div class="course-card">
+                <div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <span style="font-size:1.5rem">🐍</span>
+                    <span class="badge badge-indigo">75%</span>
+                  </div>
+                  <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:4px;">Python Programming</div>
+                  <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px;">Data structures, OOP, modules & algorithms</div>
+                </div>
+                <div>
+                  <div class="progress-bar-track" style="margin-bottom:12px;">
+                    <div class="progress-bar-fill" style="width:75%"></div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm w-full" onclick="UI.sendMessage('Explain Python Object Oriented Programming with example code')">Continue →</button>
+                </div>
+              </div>
+
+              <!-- AI & ML -->
+              <div class="course-card">
+                <div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <span style="font-size:1.5rem">🤖</span>
+                    <span class="badge badge-indigo">60%</span>
+                  </div>
+                  <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:4px;">AI & Machine Learning</div>
+                  <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px;">Neural networks, LLMs, prompt engineering</div>
+                </div>
+                <div>
+                  <div class="progress-bar-track" style="margin-bottom:12px;">
+                    <div class="progress-bar-fill" style="width:60%"></div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm w-full" onclick="UI.sendMessage('Explain Neural Networks architecture step by step')">Continue →</button>
+                </div>
+              </div>
+
+              <!-- Web Dev -->
+              <div class="course-card">
+                <div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <span style="font-size:1.5rem">🌐</span>
+                    <span class="badge badge-indigo">80%</span>
+                  </div>
+                  <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:4px;">Web Development</div>
+                  <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px;">HTML, CSS, modern JS, REST APIs & Node.js</div>
+                </div>
+                <div>
+                  <div class="progress-bar-track" style="margin-bottom:12px;">
+                    <div class="progress-bar-fill" style="width:80%"></div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm w-full" onclick="UI.sendMessage('Explain REST API design principles with example endpoints')">Continue →</button>
+                </div>
+              </div>
+
+              <!-- Data Science -->
+              <div class="course-card">
+                <div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <span style="font-size:1.5rem">📊</span>
+                    <span class="badge badge-indigo">50%</span>
+                  </div>
+                  <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:4px;">Data Science</div>
+                  <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px;">NumPy, Pandas, visualization & statistics</div>
+                </div>
+                <div>
+                  <div class="progress-bar-track" style="margin-bottom:12px;">
+                    <div class="progress-bar-fill" style="width:50%"></div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm w-full" onclick="UI.sendMessage('Explain Pandas dataframes manipulation with code')">Continue →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
       <!-- ══ PROGRESS VIEW ════════════════════════════════════ -->
       <section id="view-progress" class="view-panel">
-        <div style="max-width:760px;margin:0 auto;padding:32px 24px 60px;width:100%;">
-          <h2 style="margin-bottom:4px;">My Learning Progress</h2>
-          <p style="color:var(--text-muted);margin-bottom:24px;">Track your skills and practice performance.</p>
+        <div style="max-width:820px;margin:0 auto;padding:36px 24px 60px;width:100%;">
+          <div style="margin-bottom:24px;">
+            <h1 style="font-size:1.6rem;margin-bottom:4px;">My Learning Progress</h1>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">Comprehensive analytics on your skill mastery and areas of improvement.</p>
+          </div>
 
-          <div class="card" style="margin-bottom:16px;">
-            <div style="font-weight:600;margin-bottom:12px;">Skill Mastery</div>
+          <div class="card" style="margin-bottom:24px;">
+            <div style="font-weight:700;font-size:1.05rem;color:var(--text-primary);margin-bottom:16px;">Skill Mastery Breakdown</div>
             <div id="skills-container"></div>
           </div>
 
-          <div class="card" style="margin-bottom:16px;">
-            <div style="font-weight:600;margin-bottom:8px;">Identified Weak Areas</div>
-            <div id="weak-areas" style="color:var(--text-muted);font-size:0.875rem;">No weak areas identified yet. Keep practicing!</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:16px;">
+            <div class="card">
+              <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+                <span>⚠️</span> <span>Identified Weak Areas</span>
+              </div>
+              <div id="weak-areas" style="color:var(--text-secondary);font-size:0.875rem;">No weak areas identified yet. Keep practicing quizzes!</div>
+            </div>
+
+            <div class="card">
+              <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+                <span>✓</span> <span>Completed Topics</span>
+              </div>
+              <div id="completed-topics" style="color:var(--text-secondary);font-size:0.875rem;">No topics completed yet.</div>
+            </div>
+
+            <div class="card">
+              <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+                <span>🛠️</span> <span>Completed Projects</span>
+              </div>
+              <div id="completed-projects" style="color:var(--text-secondary);font-size:0.875rem;">No projects completed yet.</div>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- ══ ROADMAP VIEW ══════════════════════════════════════ -->
       <section id="view-roadmap" class="view-panel">
-        <div style="max-width:760px;margin:0 auto;padding:32px 24px 60px;width:100%;">
-          <h2 style="margin-bottom:4px;">Learning & Career Roadmap</h2>
-          <p style="color:var(--text-muted);margin-bottom:24px;">Follow step-by-step tracks to achieve your career goals.</p>
+        <div style="max-width:820px;margin:0 auto;padding:36px 24px 60px;width:100%;">
+          <div style="margin-bottom:24px;">
+            <h1 style="font-size:1.6rem;margin-bottom:4px;">Learning & Career Roadmap</h1>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">Follow structured stage paths from fundamental computer science to advanced AI engineering.</p>
+          </div>
 
           <div id="roadmap-container"></div>
         </div>
@@ -199,29 +373,57 @@
 
       <!-- ══ SETTINGS VIEW ════════════════════════════════════ -->
       <section id="view-settings" class="view-panel">
-        <div style="max-width:560px;margin:0 auto;padding:32px 24px 60px;width:100%;">
-          <h2 style="margin-bottom:20px;">Settings</h2>
+        <div style="max-width:620px;margin:0 auto;padding:36px 24px 60px;width:100%;">
+          <div style="margin-bottom:24px;">
+            <h1 style="font-size:1.6rem;margin-bottom:4px;">Settings & Preferences</h1>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">Personalize your profile, target learning goals, and AI tutor behavior.</p>
+          </div>
 
-          <div class="card" style="margin-bottom:16px;">
-            <div class="label">Profile Settings</div>
-            <div style="margin-bottom:12px;">
-              <label class="label" for="setting-name">Name</label>
-              <input type="text" class="input-field" id="setting-name" placeholder="Your name" />
+          <div class="card" style="margin-bottom:20px;">
+            <div class="label" style="margin-bottom:16px;">Student Profile</div>
+            
+            <div style="margin-bottom:16px;">
+              <label class="label" for="setting-name">Your Full Name</label>
+              <input type="text" class="input-field" id="setting-name" placeholder="Enter your name" />
             </div>
-            <div style="margin-bottom:12px;">
-              <label class="label" for="setting-type">Profile Type</label>
+
+            <div style="margin-bottom:16px;">
+              <label class="label" for="setting-type">Profile Category</label>
               <select class="input-field" id="setting-type">
                 <option value="student">School Student</option>
                 <option value="college">College Student</option>
                 <option value="university">University Student</option>
                 <option value="jobseeker">Job Seeker</option>
+                <option value="teacher">Teacher</option>
               </select>
             </div>
-            <div style="margin-bottom:16px;">
-              <label class="label" for="setting-goal">Learning Goal</label>
-              <input type="text" class="input-field" id="setting-goal" placeholder="e.g. Become an AI Engineer" />
+
+            <div style="margin-bottom:20px;">
+              <label class="label" for="setting-goal">Primary Learning Goal</label>
+              <input type="text" class="input-field" id="setting-goal" placeholder="e.g. Become an AI Engineer, Master Python for Exams" />
             </div>
-            <button class="btn btn-primary" id="save-profile-btn">Save Settings</button>
+
+            <button class="btn btn-primary" id="save-profile-btn">Save Profile Changes</button>
+          </div>
+
+          <div class="card">
+            <div class="label" style="margin-bottom:16px;">AI Tutor Preferences</div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+              <div>
+                <div style="font-weight:600;font-size:0.9rem;color:var(--text-primary);">Stream AI Responses</div>
+                <div style="font-size:0.78rem;color:var(--text-secondary);">Real-time token streaming for faster AI answers</div>
+              </div>
+              <input type="checkbox" id="setting-stream" style="width:18px;height:18px;accent-color:var(--primary);" />
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">
+              <div>
+                <div style="font-weight:600;font-size:0.9rem;color:var(--text-primary);">Mixed Language Assistance</div>
+                <div style="font-size:0.78rem;color:var(--text-secondary);">Support Roman Urdu / bilingual explanations</div>
+              </div>
+              <input type="checkbox" id="setting-language" style="width:18px;height:18px;accent-color:var(--primary);" />
+            </div>
           </div>
         </div>
       </section>
@@ -230,11 +432,14 @@
 
   </div><!-- end #app -->
 
-  <!-- ─── OPTIONAL AI AGENT ACTIVITY SLIDE-OVER DRAWER ──────── -->
+  <!-- ─── AI AGENT WORKFLOW SLIDE-OVER DRAWER ────────────────── -->
   <div class="drawer-overlay" id="agent-drawer">
     <div class="drawer-content">
       <div class="drawer-header">
-        <div style="font-weight:600;font-size:0.9rem;">AI Agent Workflow</div>
+        <div>
+          <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">AI Agent Workflow</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary);">Multi-agent system orchestration</div>
+        </div>
         <button class="drawer-close-btn" onclick="UI.toggleAgentDrawer(false)">✕</button>
       </div>
       <div class="drawer-body" id="agent-cards"></div>
@@ -244,20 +449,20 @@
   <!-- ─── VISITOR WELCOME MODAL ──────────────────────────────── -->
   <div class="modal-overlay" id="visitor-modal" style="display:none;" role="dialog" aria-labelledby="visitor-modal-title" aria-modal="true">
     <div class="modal-box" style="max-width: 440px;">
-      <div style="text-align: center; margin-bottom: 20px;">
-        <div style="width: 48px; height: 48px; background: var(--primary-light); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.4rem; margin-bottom: 12px;">👋</div>
-        <h3 id="visitor-modal-title" style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Welcome to AI Academy</h3>
-        <p style="font-size: 0.875rem; color: var(--text-muted);">Before you continue, please tell us your name to personalize your workspace.</p>
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div style="width: 52px; height: 52px; background: var(--primary-light); border-radius: var(--radius-xl); display: inline-flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.5rem; margin-bottom: 14px; border: 1px solid var(--primary-border);">👋</div>
+        <h3 id="visitor-modal-title" style="font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Welcome to AI Academy</h3>
+        <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">Tell us your name to personalize your intelligent learning workspace and track your progress.</p>
       </div>
 
       <form id="visitor-welcome-form" onsubmit="handleVisitorSubmit(event)">
-        <div style="margin-bottom: 16px;">
-          <label for="visitor-name-input" class="label">Your Name</label>
-          <input type="text" id="visitor-name-input" class="input-field" placeholder="Enter your name..." required minlength="2" maxlength="50" autocomplete="name" />
+        <div style="margin-bottom: 20px;">
+          <label for="visitor-name-input" class="label">Your Full Name</label>
+          <input type="text" id="visitor-name-input" class="input-field" placeholder="e.g. Zainab" required minlength="2" maxlength="50" autocomplete="name" />
         </div>
 
-        <button type="submit" class="btn btn-primary" id="visitor-submit-btn" style="width: 100%; padding: 10px; font-weight: 600;">
-          Continue →
+        <button type="submit" class="btn btn-primary" id="visitor-submit-btn" style="width: 100%; padding: 12px; font-weight: 700; font-size: 0.925rem;">
+          Continue to AI Academy →
         </button>
       </form>
     </div>
@@ -266,7 +471,7 @@
   <!-- Toast Notifications Container -->
   <div id="toast-container"></div>
 
-  <!-- JavaScript -->
+  <!-- JavaScript Application Modules -->
   <script src="js/config.js"></script>
   <script src="js/agents.js"></script>
   <script src="js/quiz.js"></script>

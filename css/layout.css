@@ -1,9 +1,9 @@
 /* ============================================================
    AI ACADEMY — layout.css
-   Compact sidebar, full-bleed main workspace, clean headers (SaaS Theme)
+   Dark Navy Sidebar, Clean Top Header & Responsive Workspace
    ============================================================ */
 
-/* ── App Grid (2-Column Desktop Layout) ──────────────────────── */
+/* ── App Grid (2-Column Layout) ────────────────────────────── */
 #app {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
@@ -14,149 +14,200 @@
   background: var(--bg-base);
 }
 
-/* ── Compact Left Sidebar ───────────────────────────────────── */
+/* ── Dark Navy Sidebar (#0F172A / #111827) ──────────────────── */
 #app-sidebar {
-  background: var(--bg-surface);
-  border-right: 1px solid var(--border);
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-sidebar);
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  z-index: 10;
+  z-index: 100;
+  color: var(--text-sidebar);
 }
 
+/* Brand Header */
 .sidebar-header {
-  padding: var(--space-4) var(--space-4);
+  padding: 20px 18px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-sidebar);
 }
+
 .sidebar-logo {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   text-decoration: none;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
+}
+.sidebar-logo:hover {
+  text-decoration: none;
 }
 .sidebar-logo-icon {
-  width: 26px; height: 26px;
-  background: var(--primary);
-  color: #ffffff;
-  border-radius: var(--radius-sm);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
 }
 
+.sidebar-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-logo-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.sidebar-logo-sub {
+  font-size: 0.68rem;
+  color: var(--text-sidebar-muted);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* New Chat Button */
 .sidebar-new-chat-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  margin: var(--space-3) var(--space-3);
-  padding: var(--space-2) var(--space-3);
+  margin: var(--space-4) 14px var(--space-2);
+  padding: 10px 16px;
   background: var(--primary);
-  color: #ffffff;
+  color: #FFFFFF;
   border: none;
   border-radius: var(--radius-md);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background var(--transition-fast);
+  transition: all var(--transition-fast);
   font-family: inherit;
-  box-shadow: var(--shadow-xs);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
 }
 .sidebar-new-chat-btn:hover {
   background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+.sidebar-new-chat-btn svg {
+  stroke: #FFFFFF;
 }
 
+/* Navigation Section Titles & Links */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-2) 12px;
 }
+
+.sidebar-section-divider {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748B;
+  padding: 14px 12px 6px;
+}
+
 .sidebar-nav-item {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
+  gap: 10px;
+  padding: 9px 12px;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--text-sidebar-muted);
   border: none;
   background: transparent;
   font-family: inherit;
   width: 100%;
   text-align: left;
+  position: relative;
 }
 .sidebar-nav-item svg {
-  width: 18px; height: 18px;
-  stroke: var(--text-muted);
+  width: 18px;
+  height: 18px;
+  stroke: var(--text-sidebar-muted);
   flex-shrink: 0;
   transition: stroke var(--transition-fast);
 }
 .sidebar-nav-item:hover {
-  background: var(--bg-subtle);
-  color: var(--text-primary);
+  background: var(--bg-sidebar-hover);
+  color: #FFFFFF;
 }
-.sidebar-nav-item:hover svg { stroke: var(--text-primary); }
+.sidebar-nav-item:hover svg {
+  stroke: #FFFFFF;
+}
 .sidebar-nav-item.active {
-  background: var(--primary-light);
-  color: var(--primary);
+  background: rgba(79, 70, 229, 0.18);
+  color: #FFFFFF;
   font-weight: 600;
 }
-.sidebar-nav-item.active svg { stroke: var(--primary); }
+.sidebar-nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  background: var(--primary);
+  border-radius: 0 4px 4px 0;
+}
+.sidebar-nav-item.active svg {
+  stroke: #818CF8;
+}
 
+/* Sidebar History List */
 .sidebar-history-section {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-1) 12px var(--space-2);
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-.sidebar-section-title {
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-faint);
-  padding: var(--space-2) var(--space-3) 4px;
 }
 
 .chat-history-item {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 6px var(--space-3);
+  padding: 7px 12px;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-sidebar-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .chat-history-item:hover {
-  background: var(--bg-subtle);
-  color: var(--text-primary);
+  background: var(--bg-sidebar-hover);
+  color: #FFFFFF;
 }
 
+/* Sidebar Footer */
 .sidebar-footer {
-  border-top: 1px solid var(--border);
-  padding: var(--space-3);
+  border-top: 1px solid var(--border-sidebar);
+  padding: 10px 12px;
 }
 
-/* ── Main Content Area ──────────────────────────────────────── */
+/* ── Main Workspace Canvas ──────────────────────────────────── */
 #app-main {
   display: flex;
   flex-direction: column;
@@ -166,7 +217,7 @@
   background: var(--bg-base);
 }
 
-/* View Panels — Enable vertical scrolling for sections */
+/* View Panels */
 .view-panel {
   flex: 1;
   display: none;
@@ -179,42 +230,16 @@
   display: flex;
 }
 
-/* Chat view panel manages internal scroll on #chat-messages */
 #view-chat.view-panel {
   overflow: hidden;
 }
 
-/* Top Navigation Bar in Workspace */
-.workspace-header {
-  height: 56px;
-  padding: 0 var(--space-6);
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-surface);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-.workspace-title-wrap {
-  display: flex;
-  flex-direction: column;
-}
-.workspace-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-.workspace-subtitle {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-/* ── AI Activity Slide-Over Drawer ─────────────────────────── */
+/* AI Agent Slide-over Drawer */
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(2px);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(3px);
   z-index: var(--z-overlay);
   display: none;
   justify-content: flex-end;
@@ -223,20 +248,21 @@
   display: flex;
 }
 .drawer-content {
-  width: 320px;
+  width: 340px;
   background: var(--bg-surface);
   height: 100vh;
   box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
-  animation: slideInRight 200ms ease-out both;
+  animation: slideInRight 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  border-left: 1px solid var(--border);
 }
 @keyframes slideInRight {
   from { transform: translateX(100%); }
   to   { transform: translateX(0); }
 }
 .drawer-header {
-  padding: var(--space-4);
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -245,20 +271,27 @@
 .drawer-close-btn {
   background: transparent;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
   cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+.drawer-close-btn:hover {
+  background: var(--bg-surface-subtle);
+  color: var(--text-primary);
 }
 .drawer-body {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-4);
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 10px;
 }
 
-/* ── Mobile Layout (<768px) ─────────────────────────────────── */
+/* Responsive Drawer & Mobile Sidebar (<768px) */
 @media (max-width: 768px) {
   #app {
     grid-template-columns: 1fr;
@@ -267,11 +300,11 @@
     position: fixed;
     left: -100%;
     top: 0;
-    width: 250px;
+    width: 270px;
     transition: left var(--transition-normal);
   }
   #app-sidebar.mobile-open {
     left: 0;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
   }
 }

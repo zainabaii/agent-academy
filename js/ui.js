@@ -9,25 +9,36 @@ const UI = (() => {
   // ── Markdown renderer (uses marked.js CDN) ────────────────────
   function renderMarkdown(text) {
     if (!text || !text.trim()) return '';
+    let parsed = '';
     if (typeof marked !== 'undefined') {
       try {
-        return marked.parse(text, {
+        parsed = marked.parse(text, {
           breaks: true,
           gfm: true,
         });
-      } catch {}
+      } catch {
+        parsed = text;
+      }
+    } else {
+      parsed = text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
     }
-    // Fallback: basic formatting
-    return text
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/`(.+?)`/g, '<code>$1</code>')
-      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-      .replace(/^- (.+)$/gm, '<li>$1</li>')
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n/g, '<br>');
+
+    if (parsed) {
+      parsed = parsed
+        .replace(/<h[234]>\s*(?:💡|📌|🧠)?\s*Remember This\s*:?\s*<\/h[234]>\s*<p>(.*?)<\/p>/gi, '<div class="ai-card-remember"><div class="ai-card-remember-title">💡 Remember This</div><p>$1</p></div>')
+        .replace(/<h[234]>\s*(?:🎯|📝|⚠️)?\s*Exam Point\s*:?\s*<\/h[234]>\s*<p>(.*?)<\/p>/gi, '<div class="ai-card-exam"><div class="ai-card-exam-title">🎯 Exam Point</div><p>$1</p></div>');
+    }
+
+    return parsed;
   }
 
   // ── Toast Notifications ───────────────────────────────────────
@@ -276,8 +287,12 @@ const UI = (() => {
     const session = Config.getSession();
     const msgCountEl = document.getElementById('stat-messages');
     const quizCountEl = document.getElementById('stat-quizzes');
+    const progressEl = document.getElementById('stat-overall-progress');
     if (msgCountEl) msgCountEl.textContent = session.messagesCount || 0;
     if (quizCountEl) quizCountEl.textContent = session.quizzesTaken || 0;
+    if (progressEl && typeof Progress !== 'undefined') {
+      progressEl.textContent = (Progress.getOverallProgress() || 0) + '%';
+    }
   }
 
   function updateHeaderProfile() {
@@ -285,8 +300,10 @@ const UI = (() => {
     const initials = (profile.name || 'Learner').slice(0, 2).toUpperCase();
     const avatarEl = document.getElementById('header-avatar');
     const nameEl   = document.getElementById('header-name');
+    const welcomeNameEl = document.getElementById('landing-welcome-name');
     if (avatarEl) avatarEl.textContent = initials;
     if (nameEl)   nameEl.textContent   = profile.name;
+    if (welcomeNameEl) welcomeNameEl.textContent = profile.name || 'Learner';
   }
 
   function addChatHistoryItem(title) {
