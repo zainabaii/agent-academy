@@ -169,19 +169,46 @@ const UI = (() => {
     el.className = 'message ai';
     el.id = msgId;
     el.innerHTML = `
-      <div class="message-avatar">AI</div>
+      <div class="message-avatar" title="AI Academy Assistant">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 4L5 26H10.2L13.5 19.2H18.5L21.8 26H27L16 4Z" fill="url(#ai-avatar-grad)" />
+          <path d="M14.6 16.8H17.4L16 13.6L14.6 16.8Z" fill="#FFFFFF" />
+          <circle cx="16" cy="4" r="2.2" fill="#818CF8" />
+          <circle cx="5" cy="26" r="2.2" fill="#818CF8" />
+          <circle cx="27" cy="26" r="2.2" fill="#818CF8" />
+          <circle cx="13.5" cy="19.2" r="1.8" fill="#C7D2FE" />
+          <circle cx="18.5" cy="19.2" r="1.8" fill="#C7D2FE" />
+          <defs>
+            <linearGradient id="ai-avatar-grad" x1="5" y1="4" x2="27" y2="26" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#818CF8"/>
+              <stop offset="1" stop-color="#4F46E5"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
       <div class="message-body">
         <div class="message-meta">
           <span style="font-weight:600;color:var(--text-primary)">AI Learning Assistant</span> • <span>${formatTime()}</span>
         </div>
         <div class="message-bubble md-content" id="${msgId}_content"></div>
         <div class="message-actions" id="${msgId}_actions" style="display:none;">
-          <button class="msg-action-btn" onclick="UI.copyMessage('${msgId}')">Copy</button>
+          <button class="msg-action-btn" onclick="UI.copyMessage('${msgId}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;margin-right:3px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
+          </button>
         </div>
         <div class="contextual-actions" id="${msgId}_contextual" style="display:none;">
-          <button class="contextual-btn" onclick="UI.sendMessage('Give me a short quiz on this topic')">📝 Take Quiz</button>
-          <button class="contextual-btn" onclick="UI.sendMessage('Recommend a hands-on project for this')">🛠️ Practice Project</button>
-          <button class="contextual-btn" onclick="UI.sendMessage('Explain this deeper with advanced examples')">🔍 Go Deeper</button>
+          <button class="contextual-btn" onclick="UI.sendMessage('Give me a short quiz on this topic')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Take Quiz</span>
+          </button>
+          <button class="contextual-btn" onclick="UI.sendMessage('Recommend a hands-on project for this')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            <span>Practice Project</span>
+          </button>
+          <button class="contextual-btn" onclick="UI.sendMessage('Explain this deeper with advanced examples')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            <span>Go Deeper</span>
+          </button>
         </div>
       </div>
     `;
@@ -245,7 +272,21 @@ const UI = (() => {
     el.className = 'message ai';
     el.id = 'typing-indicator';
     el.innerHTML = `
-      <div class="message-avatar">AI</div>
+      <div class="message-avatar" title="AI Academy Assistant">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 4L5 26H10.2L13.5 19.2H18.5L21.8 26H27L16 4Z" fill="url(#ai-type-grad)" />
+          <path d="M14.6 16.8H17.4L16 13.6L14.6 16.8Z" fill="#FFFFFF" />
+          <circle cx="16" cy="4" r="2.2" fill="#818CF8" />
+          <circle cx="5" cy="26" r="2.2" fill="#818CF8" />
+          <circle cx="27" cy="26" r="2.2" fill="#818CF8" />
+          <defs>
+            <linearGradient id="ai-type-grad" x1="5" y1="4" x2="27" y2="26" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#818CF8"/>
+              <stop offset="1" stop-color="#4F46E5"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
       <div class="message-body">
         <div class="message-meta">
           <span style="font-size:0.72rem;color:var(--text-muted)">AI Academy is thinking...</span>

@@ -22,11 +22,24 @@
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/chat.css" />
+
+  <!-- Classic Modern Warm Ivory Main Background Theme (#F7F5F1 / #FAF9F6) -->
+  <style>
+    :root {
+      --bg-base: #F7F5F1;
+      --bg-surface: #FFFFFF;
+      --bg-surface-subtle: #F2EFE9;
+      --bg-sidebar: #0E1A33;
+    }
+    body, #app, #app-main, .view-panel, #view-chat, #chat-messages, #chat-input-area {
+      background-color: #F7F5F1 !important;
+    }
+  </style>
 </head>
 
-<body>
+<body style="background-color: #F7F5F1;">
 
-  <div id="app">
+  <div id="app" style="background-color: #F7F5F1;">
 
     <!-- ─── DARK NAVY SIDEBAR ─────────────────────────────────── -->
     <aside id="app-sidebar" aria-label="Sidebar navigation">
@@ -34,7 +47,23 @@
       <!-- Header & Brand Logo -->
       <div class="sidebar-header">
         <a href="#" class="sidebar-logo" onclick="UI.switchView('chat');return false;">
-          <div class="sidebar-logo-icon">AI</div>
+          <div class="sidebar-logo-icon">
+            <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 4L5 26H10.2L13.5 19.2H18.5L21.8 26H27L16 4Z" fill="url(#sb-logo-grad)" />
+              <path d="M14.6 16.8H17.4L16 13.6L14.6 16.8Z" fill="#FFFFFF" />
+              <circle cx="16" cy="4" r="2.2" fill="#818CF8" />
+              <circle cx="5" cy="26" r="2.2" fill="#818CF8" />
+              <circle cx="27" cy="26" r="2.2" fill="#818CF8" />
+              <circle cx="13.5" cy="19.2" r="1.8" fill="#C7D2FE" />
+              <circle cx="18.5" cy="19.2" r="1.8" fill="#C7D2FE" />
+              <defs>
+                <linearGradient id="sb-logo-grad" x1="5" y1="4" x2="27" y2="26" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#818CF8"/>
+                  <stop offset="1" stop-color="#4F46E5"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
           <div class="sidebar-logo-text">
             <span class="sidebar-logo-title">AI Academy</span>
             <span class="sidebar-logo-sub">Intelligent Learning</span>
@@ -90,10 +119,10 @@
     </aside>
 
     <!-- ─── MAIN WORKSPACE ────────────────────────────────────── -->
-    <main id="app-main" role="main">
+    <main id="app-main" role="main" style="background-color: #F7F5F1;">
 
       <!-- ══ CHAT WORKSPACE VIEW (AI TUTOR) ═════════════════════ -->
-      <section id="view-chat" class="view-panel active">
+      <section id="view-chat" class="view-panel active" style="background-color: #F7F5F1;">
 
         <!-- Top Header Bar -->
         <header class="chat-workspace-header">
@@ -102,11 +131,14 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
             <div class="chat-title-badge-group">
-              <div class="chat-workspace-title">AI Learning Assistant</div>
-              <div class="online-status-badge">
-                <span class="online-dot"></span>
-                <span>Online</span>
+              <div class="chat-title-row">
+                <div class="chat-workspace-title">AI Learning Assistant</div>
+                <div class="online-status-badge">
+                  <span class="online-dot"></span>
+                  <span>Online</span>
+                </div>
               </div>
+              <div class="chat-workspace-sub">Your personal AI tutor for personalized learning</div>
             </div>
           </div>
 
@@ -126,8 +158,22 @@
             </button>
 
             <!-- User Header Profile -->
-            <div style="display:flex;align-items:center;gap:8px;padding-left:8px;border-left:1px solid var(--border);">
-              <div id="header-avatar" style="width:30px;height:30px;border-radius:var(--radius-full);background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;border:1px solid var(--primary-border);">LN</div>
+            <div class="header-profile-box">
+              <div id="header-avatar" class="header-profile-avatar" title="AI Academy Learner">
+                <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 4L5 26H10.2L13.5 19.2H18.5L21.8 26H27L16 4Z" fill="url(#hdr-logo-grad)" />
+                  <path d="M14.6 16.8H17.4L16 13.6L14.6 16.8Z" fill="#FFFFFF" />
+                  <circle cx="16" cy="4" r="2.2" fill="#818CF8" />
+                  <circle cx="5" cy="26" r="2.2" fill="#818CF8" />
+                  <circle cx="27" cy="26" r="2.2" fill="#818CF8" />
+                  <defs>
+                    <linearGradient id="hdr-logo-grad" x1="5" y1="4" x2="27" y2="26" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#818CF8"/>
+                      <stop offset="1" stop-color="#4F46E5"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
               <span id="header-name" style="font-size:0.85rem;font-weight:600;color:var(--text-primary);display:none;">Learner</span>
             </div>
           </div>
@@ -450,7 +496,23 @@
   <div class="modal-overlay" id="visitor-modal" style="display:none;" role="dialog" aria-labelledby="visitor-modal-title" aria-modal="true">
     <div class="modal-box" style="max-width: 440px;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <div style="width: 52px; height: 52px; background: var(--primary-light); border-radius: var(--radius-xl); display: inline-flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.5rem; margin-bottom: 14px; border: 1px solid var(--primary-border);">👋</div>
+        <div style="width: 56px; height: 56px; background: var(--bg-sidebar); border-radius: var(--radius-xl); display: inline-flex; align-items: center; justify-content: center; color: #FFFFFF; margin-bottom: 14px; border: 1px solid var(--border-sidebar); box-shadow: 0 4px 12px rgba(14, 26, 51, 0.2);">
+          <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 4L5 26H10.2L13.5 19.2H18.5L21.8 26H27L16 4Z" fill="url(#modal-logo-grad)" />
+            <path d="M14.6 16.8H17.4L16 13.6L14.6 16.8Z" fill="#FFFFFF" />
+            <circle cx="16" cy="4" r="2.2" fill="#818CF8" />
+            <circle cx="5" cy="26" r="2.2" fill="#818CF8" />
+            <circle cx="27" cy="26" r="2.2" fill="#818CF8" />
+            <circle cx="13.5" cy="19.2" r="1.8" fill="#C7D2FE" />
+            <circle cx="18.5" cy="19.2" r="1.8" fill="#C7D2FE" />
+            <defs>
+              <linearGradient id="modal-logo-grad" x1="5" y1="4" x2="27" y2="26" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#818CF8"/>
+                <stop offset="1" stop-color="#4F46E5"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
         <h3 id="visitor-modal-title" style="font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Welcome to AI Academy</h3>
         <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">Tell us your name to personalize your intelligent learning workspace and track your progress.</p>
       </div>

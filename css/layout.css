@@ -1,6 +1,6 @@
 /* ============================================================
    AI ACADEMY — layout.css
-   Dark Navy Sidebar, Clean Top Header & Responsive Workspace
+   Deep Navy Sidebar, Clean Top Header & Responsive Workspace
    ============================================================ */
 
 /* ── App Grid (2-Column Layout) ────────────────────────────── */
@@ -14,7 +14,7 @@
   background: var(--bg-base);
 }
 
-/* ── Dark Navy Sidebar (#0F172A / #111827) ──────────────────── */
+/* ── Deep Navy Sidebar (#0E1A33) ──────────────────────────── */
 #app-sidebar {
   background: var(--bg-sidebar);
   border-right: 1px solid var(--border-sidebar);
@@ -28,7 +28,7 @@
 
 /* Brand Header */
 .sidebar-header {
-  padding: 20px 18px 16px;
+  padding: 18px 18px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -38,25 +38,24 @@
 .sidebar-logo {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 12px;
   text-decoration: none;
 }
 .sidebar-logo:hover {
   text-decoration: none;
 }
+
 .sidebar-logo-icon {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  color: #FFFFFF;
-  border-radius: var(--radius-md);
+  width: 36px;
+  height: 36px;
+  background: rgba(79, 70, 229, 0.15);
+  border: 1px solid rgba(199, 210, 254, 0.25);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-logo-text {
@@ -64,17 +63,18 @@
   flex-direction: column;
 }
 .sidebar-logo-title {
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: 800;
+  font-size: 1rem;
   color: #FFFFFF;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   line-height: 1.2;
 }
 .sidebar-logo-sub {
   font-size: 0.68rem;
-  color: var(--text-sidebar-muted);
+  color: #94A3B8;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 /* New Chat Button */
@@ -87,7 +87,7 @@
   padding: 10px 16px;
   background: var(--primary);
   color: #FFFFFF;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
   font-size: 0.85rem;
   font-weight: 600;
@@ -99,6 +99,7 @@
 .sidebar-new-chat-btn:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
 }
 .sidebar-new-chat-btn svg {
   stroke: #FFFFFF;
@@ -108,12 +109,12 @@
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   padding: var(--space-2) 12px;
 }
 
 .sidebar-section-divider {
-  font-size: 0.65rem;
+  font-size: 0.64rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -131,7 +132,7 @@
   transition: all var(--transition-fast);
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--text-sidebar-muted);
+  color: #94A3B8;
   border: none;
   background: transparent;
   font-family: inherit;
@@ -142,19 +143,19 @@
 .sidebar-nav-item svg {
   width: 18px;
   height: 18px;
-  stroke: var(--text-sidebar-muted);
+  stroke: #94A3B8;
   flex-shrink: 0;
   transition: stroke var(--transition-fast);
 }
 .sidebar-nav-item:hover {
   background: var(--bg-sidebar-hover);
-  color: #FFFFFF;
+  color: #F8FAFC;
 }
 .sidebar-nav-item:hover svg {
-  stroke: #FFFFFF;
+  stroke: #F8FAFC;
 }
 .sidebar-nav-item.active {
-  background: rgba(79, 70, 229, 0.18);
+  background: var(--bg-sidebar-active);
   color: #FFFFFF;
   font-weight: 600;
 }
@@ -186,12 +187,12 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 7px 12px;
+  padding: 8px 12px;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
   font-size: 0.8rem;
-  color: var(--text-sidebar-muted);
+  color: #94A3B8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -238,7 +239,7 @@
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(3px);
   z-index: var(--z-overlay);
   display: none;
@@ -308,3 +309,4 @@
     box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
   }
 }
+
