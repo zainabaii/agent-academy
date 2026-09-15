@@ -30,15 +30,16 @@ function initApp() {
     btn.classList.toggle('active', btn.dataset.level === currentDiff);
   });
 
-  // Switch to default chat view
-  const lastView = Config.get('aiacademy_current_view', 'chat');
+  // Switch to default view
+  const lastView = Config.get('aiacademy_current_view', 'landing');
   UI.switchView(lastView);
   if (lastView === 'chat') {
     UI.showWelcomeMessage();
   }
 
-  // Update header and session statistics
+  // Update header, dashboard widgets, and session statistics
   UI.updateHeaderProfile();
+  UI.renderDashboardWidgets();
   UI.updateSessionStats();
 
   // Bind event listeners

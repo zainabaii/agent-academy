@@ -287,19 +287,48 @@ const Progress = (() => {
     }
   }
 
-  // ── Utility ───────────────────────────────────────────────────
-  function escapeHtml(text) {
-    return String(text)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  }
-
-  function getOverallProgress() {
+  function generateSkillScan() {
     const data = getProgressData();
-    const values = Object.values(data.skills);
-    if (values.length === 0) return 0;
-    return Math.round(values.reduce((a, b) => a + b, 0) / values.length);
+    const skills = data.skills || {};
+    const skillEntries = Object.entries(skills);
+    
+    const hasData = skillEntries.some(([, score]) => score > 0) || data.completedTopics.length > 0;
+    
+    const overallScore = getOverallProgress();
+    const strengths = skillEntries.filter(([, score]) => score >= 65).map(([name, score]) => ({ name, score }));
+    const weakAreas = skillEntries.filter(([, score]) => score > 0 && score < 65).map(([name, score]) => ({ name, score }));
+    
+    let nextStep = {
+      title: 'Take Your First Skill Assessment',
+      description: 'Complete a quiz or assessment to unlock your personalized AI Skill Scan.',
+      actionText: 'Start Assessment →',
+      actionView: 'assessment'
+    };
+
+    if (weakAreas.length > 0) {
+      const topWeakness = weakAreas[0];
+      nextStep = {
+        title: `Practice ${topWeakness.name} (${topWeakness.score}% mastery)`,
+        description: `Your recent assessment shows that ${topWeakness.name} needs improvement to reach optimal readiness.`,
+        actionText: `Practice ${topWeakness.name} →`,
+        actionPrompt: `Help me practice and improve my ${topWeakness.name} skills`
+      };
+    } else if (hasData) {
+      nextStep = {
+        title: 'Advance to the Next Roadmap Stage',
+        description: 'You have mastered your current topics! Move to the next module on your AI Engineering path.',
+        actionText: 'Open Roadmap →',
+        actionView: 'roadmap'
+      };
+    }
+
+    return {
+      overallScore,
+      strengths,
+      weakAreas,
+      nextStep,
+      hasData
+    };
   }
 
   return {
@@ -313,6 +342,7 @@ const Progress = (() => {
     renderSkillBars,
     renderRoadmap,
     renderProgressDashboard,
+    generateSkillScan,
     getOverallProgress,
     DEFAULT_SKILLS,
     DEFAULT_ROADMAP,

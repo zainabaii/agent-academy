@@ -67,8 +67,15 @@ const UI = (() => {
       n.classList.toggle('active', n.dataset.view === viewId);
     });
 
+    if (viewId === 'landing' || viewId === 'dashboard') renderDashboardWidgets();
     if (viewId === 'progress') Progress.renderProgressDashboard();
     if (viewId === 'roadmap') Progress.renderRoadmap();
+    if (viewId === 'skill-scan') renderSkillScanView();
+    if (viewId === 'weak-areas') renderWeakAreasView();
+    if (viewId === 'career' && typeof Career !== 'undefined') Career.renderCareerHub();
+    if (viewId === 'project-builder' && typeof Projects !== 'undefined') Projects.renderProjectBuilder();
+    if (viewId === 'challenges') renderChallengesView();
+    if (viewId === 'achievements') renderAchievementsView();
     if (viewId === 'settings') renderSettings();
 
     Config.set('aiacademy_current_view', viewId);
@@ -422,6 +429,188 @@ I am your **AI Learning Assistant**. I can help you understand academic concepts
       .replace(/"/g, '&quot;');
   }
 
+  // ── Dashboard Widgets ("WHAT SHOULD I DO NEXT?") ─────────────
+  function renderDashboardWidgets() {
+    const nextWidgetEl = document.getElementById('dashboard-next-step-widget');
+    if (!nextWidgetEl) return;
+
+    const scan = Progress.generateSkillScan();
+    const next = scan.nextStep;
+
+    nextWidgetEl.innerHTML = `
+      <div style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border: 1.5px solid var(--primary-border); border-radius: var(--radius-xl); padding: 20px 24px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;">
+        <div style="position: absolute; right: -10px; top: -10px; font-size: 5rem; opacity: 0.08; pointer-events: none; font-weight: 800; color: var(--primary);">
+          NEXT
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">
+          <span>⚡</span> <span>WHAT SHOULD I DO NEXT? — AI RECOMMENDATION</span>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
+          ${escapeHtml(next.title)}
+        </h3>
+        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 14px; max-width: 640px;">
+          ${escapeHtml(next.description)}
+        </p>
+        <button class="btn btn-primary btn-sm" onclick="${next.actionPrompt ? `UI.sendMessage('${next.actionPrompt}')` : `UI.switchView('${next.actionView || 'chat'}')`}">
+          ${escapeHtml(next.actionText)}
+        </button>
+      </div>
+    `;
+
+    updateSessionStats();
+  }
+
+  // ── Render AI Skill Scan View ────────────────────────────────
+  function renderSkillScanView() {
+    const container = document.getElementById('skill-scan-container');
+    if (!container) return;
+
+    const scan = Progress.generateSkillScan();
+
+    container.innerHTML = `
+      <div class="card" style="margin-bottom: 24px; text-align: center; padding: 32px 24px;">
+        <div style="font-size: 2.5rem; margin-bottom: 8px;">🎯</div>
+        <h2 style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 6px;">AI Skill Scan Engine</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 520px; margin: 0 auto 20px;">
+          Analyzes your assessment quiz results, completed learning topics, and performance accuracy to diagnose strengths and gaps.
+        </p>
+        <button class="btn btn-primary" onclick="UI.toast('Skill scan refreshed!', 'info'); UI.switchView('skill-scan');">
+          🔍 Refresh AI Skill Scan
+        </button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px;">
+        <!-- Strengths -->
+        <div class="card">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--success); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+            <span>💪</span> <span>Detected Strengths (${scan.strengths.length})</span>
+          </div>
+          ${scan.strengths.length > 0 ? scan.strengths.map(s => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border);">
+              <span style="font-weight: 600; font-size: 0.875rem; color: var(--text-primary);">${escapeHtml(s.name)}</span>
+              <span class="badge badge-success">${s.score}% Mastery</span>
+            </div>
+          `).join('') : '<p style="font-size: 0.85rem; color: var(--text-muted);">Complete quizzes and assessments to unlock your strengths list.</p>'}
+        </div>
+
+        <!-- Weak Areas -->
+        <div class="card">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--warning); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+            <span>⚠️</span> <span>Areas Requiring Practice (${scan.weakAreas.length})</span>
+          </div>
+          ${scan.weakAreas.length > 0 ? scan.weakAreas.map(w => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border);">
+              <span style="font-weight: 600; font-size: 0.875rem; color: var(--text-primary);">${escapeHtml(w.name)}</span>
+              <span class="badge badge-warning">${w.score}%</span>
+            </div>
+          `).join('') : '<p style="font-size: 0.85rem; color: var(--text-muted);">No weak areas detected! Great work.</p>'}
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Render Weak Areas Page ────────────────────────────────────
+  function renderWeakAreasView() {
+    const container = document.getElementById('weak-areas-page-container');
+    if (!container) return;
+
+    const data = Progress.getProgressData();
+    const weakList = data.weakAreas || [];
+
+    if (weakList.length === 0) {
+      container.innerHTML = `
+        <div class="card" style="text-align: center; padding: 40px 24px;">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">🎉</div>
+          <h2 style="font-size: 1.3rem; color: var(--text-primary); margin-bottom: 6px;">No Weak Areas Detected</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 480px; margin: 0 auto 20px;">
+            You have no active weak areas recorded. Complete quizzes and assessments to discover topics that need extra practice.
+          </p>
+          <button class="btn btn-primary" onclick="UI.sendMessage('Give me a 5-question test on Python and APIs')">
+            Take Assessment Quiz →
+          </button>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          ${weakList.map(item => `
+            <div class="card" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+              <div>
+                <span class="badge badge-warning" style="margin-bottom: 6px;">Weakness Detected</span>
+                <h3 style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 4px;">${escapeHtml(item)}</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">Targeted AI recommended practice available to improve score.</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="UI.sendMessage('Help me practice and master ${escapeHtml(item)}')">
+                Practice Now →
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+  }
+
+  // ── Render Daily Challenges ───────────────────────────────────
+  function renderChallengesView() {
+    const container = document.getElementById('challenges-container');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap;">
+          <span class="badge badge-indigo">Daily Code & Logic Challenge</span>
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--success);">+50 XP Reward</span>
+        </div>
+        <h2 style="font-size: 1.25rem; color: var(--text-primary); margin-bottom: 6px;">
+          ⚡ Challenge: Build an API Request in Python
+        </h2>
+        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Write a Python function using <code>requests</code> that fetches data from a REST endpoint, handles HTTP 404/500 status codes, and returns parsed JSON.
+        </p>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <span class="badge badge-muted">Intermediate</span>
+          <span class="badge badge-muted">⏱️ 15 min</span>
+          <button class="btn btn-primary btn-sm" onclick="UI.sendMessage('Solve the Daily Challenge: Build a Python API request with error handling')">
+            Start Challenge →
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Render Achievements View ──────────────────────────────────
+  function renderAchievementsView() {
+    const container = document.getElementById('achievements-container');
+    if (!container) return;
+
+    const session = Config.getSession();
+    const quizCount = session.quizzesTaken || 0;
+
+    const badges = [
+      { title: 'First Quiz', desc: 'Completed your first knowledge test', earned: quizCount >= 1, icon: '🎯' },
+      { title: 'Learning Streak', desc: '5 consecutive days active', earned: true, icon: '🔥' },
+      { title: 'Roadmap Milestone', desc: 'Completed Stage 1 Fundamentals', earned: true, icon: '🗺️' },
+      { title: 'Project Builder', desc: 'Generated first project blueprint', earned: true, icon: '🛠️' },
+      { title: 'Skill Master', desc: 'Reached 80%+ mastery in a skill', earned: false, icon: '⭐' },
+      { title: 'Career Ready', desc: 'Scored 75%+ in AI Interview', earned: false, icon: '💼' },
+    ];
+
+    container.innerHTML = `
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+        ${badges.map(b => `
+          <div class="card" style="text-align: center; opacity: ${b.earned ? '1' : '0.55'};">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">${b.icon}</div>
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px;">${b.title}</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 10px;">${b.desc}</div>
+            <span class="badge ${b.earned ? 'badge-success' : 'badge-muted'}" style="font-size: 0.7rem;">
+              ${b.earned ? '✓ Unlocked' : 'Locked'}
+            </span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
   function setSendButtonState(loading) {
     const btn = document.getElementById('send-btn');
     const input = document.getElementById('chat-input');
@@ -450,6 +639,11 @@ I am your **AI Learning Assistant**. I can help you understand academic concepts
     updateHeaderProfile,
     addChatHistoryItem,
     renderSettings,
+    renderDashboardWidgets,
+    renderSkillScanView,
+    renderWeakAreasView,
+    renderChallengesView,
+    renderAchievementsView,
     showWelcomeMessage,
     scrollToBottom,
     formatTime,
@@ -457,3 +651,4 @@ I am your **AI Learning Assistant**. I can help you understand academic concepts
     setSendButtonState,
   };
 })();
+

@@ -15,6 +15,9 @@ const Config = (() => {
     PROGRESS:         'aiacademy_progress',
     SETTINGS:         'aiacademy_settings',
     SESSION:          'aiacademy_session',
+    CAREER_PROFILE:   'aiacademy_career_profile',
+    ACHIEVEMENTS:     'aiacademy_achievements',
+    DAILY_CHALLENGE:  'aiacademy_daily_challenge',
   };
 
   const MODEL = 'gemini-2.0-flash';
