@@ -67,8 +67,7 @@ ${difficultyInstruction}
 
 ---
 
-## RESPONSE RULES`;
-  }
+## RESPONSE RULES
 
 **Rule 1 — Answer exactly what is asked. Do not add unrelated information.**
 

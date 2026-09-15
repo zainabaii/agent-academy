@@ -486,10 +486,11 @@ I am your **AI Learning & Career Agent**. I can help you evaluate your skills, b
       `;
     }
 
-    if (journeyEl) {
+    if (journeyEl && typeof Progress !== 'undefined') {
       const data = Progress.getProgressData();
       const userGoal = profile.goal || 'AI & Software Engineering';
       const completedCount = data.completedTopics.length;
+      const overallPct = Progress.getOverallProgress ? Progress.getOverallProgress() : 0;
 
       journeyEl.innerHTML = `
         <div class="card" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
@@ -505,7 +506,7 @@ I am your **AI Learning & Career Agent**. I can help you evaluate your skills, b
               ${completedCount > 0 ? `${completedCount} topics completed towards your career goal.` : 'Begin your journey by completing your first topic review or skill assessment.'}
             </p>
             <div class="progress-bar-track">
-              <div class="progress-bar-fill" style="width: ${Math.max(10, Math.min(100, (completedCount * 20) + (Progress.getOverallProgress() * 0.8)))}%;"></div>
+              <div class="progress-bar-fill" style="width: ${Math.max(10, Math.min(100, (completedCount * 20) + (overallPct * 0.8)))}%;"></div>
             </div>
           </div>
           <button class="btn btn-secondary" onclick="UI.switchView('roadmap');">
