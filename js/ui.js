@@ -324,11 +324,14 @@ const UI = (() => {
   }
 
   function sendMessage(text) {
-    const input = document.getElementById('chat-input');
-    if (input) {
-      input.value = text;
-      document.getElementById('chat-form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    }
+    switchView('chat');
+    setTimeout(() => {
+      const input = document.getElementById('chat-input');
+      if (input) {
+        input.value = text;
+        document.getElementById('chat-form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      }
+    }, 50);
   }
 
   function updateSessionStats() {

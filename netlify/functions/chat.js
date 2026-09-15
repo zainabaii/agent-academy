@@ -1,6 +1,6 @@
 /* ============================================================
    AI ACADEMY — Netlify Serverless Function
-   Chatbot API via Groq API (openai/gpt-oss-20b)
+   Multi-Provider Chatbot API (Gemini + Groq with automatic fallback)
    ============================================================ */
 
 exports.handler = async (event, context) => {
@@ -29,6 +29,7 @@ exports.handler = async (event, context) => {
       messages = [],
       systemInstruction = '',
       stream = true,
+      preferredProvider = 'gemini',
       userApiKey = null
     } = payload;
 
@@ -40,22 +41,58 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const apiKey = userApiKey || process.env.GROQ_API_KEY;
+    const geminiKey = userApiKey || process.env.GEMINI_API_KEY;
+    const groqKey = userApiKey || process.env.GROQ_API_KEY;
 
-    if (!apiKey) {
+    if (!geminiKey && !groqKey) {
       return {
         statusCode: 500,
         headers: { ...headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'GROQ_API_KEY environment variable is not configured.' })
+        body: JSON.stringify({ error: 'Neither GEMINI_API_KEY nor GROQ_API_KEY is configured in Netlify environment variables.' })
       };
     }
 
-    const groqResponse = await callGroqAPI(messages, systemInstruction, stream, apiKey);
+    let response = null;
+    let providerUsed = preferredProvider;
+
+    // Try primary provider first, fall back to secondary
+    try {
+      if (preferredProvider === 'groq' && groqKey) {
+        response = await callGroqAPI(messages, systemInstruction, stream, groqKey);
+        providerUsed = 'groq';
+      } else if (geminiKey) {
+        response = await callGeminiAPI(messages, systemInstruction, stream, geminiKey);
+        providerUsed = 'gemini';
+      } else if (groqKey) {
+        response = await callGroqAPI(messages, systemInstruction, stream, groqKey);
+        providerUsed = 'groq';
+      }
+    } catch (primaryErr) {
+      console.warn(`Primary provider (${preferredProvider}) failed in Netlify function:`, primaryErr.message);
+      // Fallback
+      if (providerUsed === 'gemini' && groqKey) {
+        try {
+          response = await callGroqAPI(messages, systemInstruction, stream, groqKey);
+          providerUsed = 'groq';
+        } catch (fallbackErr) {
+          throw new Error(`Gemini Error: ${primaryErr.message} | Groq Error: ${fallbackErr.message}`);
+        }
+      } else if (providerUsed === 'groq' && geminiKey) {
+        try {
+          response = await callGeminiAPI(messages, systemInstruction, stream, geminiKey);
+          providerUsed = 'gemini';
+        } catch (fallbackErr) {
+          throw new Error(`Groq Error: ${primaryErr.message} | Gemini Error: ${fallbackErr.message}`);
+        }
+      } else {
+        throw primaryErr;
+      }
+    }
 
     // Handle Streaming SSE Response
     if (stream) {
       let sseBody = '';
-      const reader = groqResponse.body.getReader();
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
 
@@ -68,18 +105,33 @@ exports.handler = async (event, context) => {
         buffer = lines.pop();
 
         for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === '[DONE]') continue;
+          const trimmed = line.trim();
+          if (!trimmed) continue;
 
-          try {
-            const chunk = JSON.parse(jsonStr);
-            const text = chunk?.choices?.[0]?.delta?.content || '';
-            if (text) {
-              sseBody += `data: ${JSON.stringify({ text, provider: 'groq' })}\n\n`;
+          if (providerUsed === 'gemini') {
+            if (trimmed.startsWith('data: ')) {
+              const jsonStr = trimmed.slice(6).trim();
+              try {
+                const chunk = JSON.parse(jsonStr);
+                const text = chunk?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                if (text) {
+                  sseBody += `data: ${JSON.stringify({ text, provider: 'gemini' })}\n\n`;
+                }
+              } catch (e) {}
             }
-          } catch (e) {
-            // ignore incomplete chunk json parse errors
+          } else {
+            // Groq SSE
+            if (trimmed.startsWith('data: ')) {
+              const jsonStr = trimmed.slice(6).trim();
+              if (jsonStr === '[DONE]') continue;
+              try {
+                const chunk = JSON.parse(jsonStr);
+                const text = chunk?.choices?.[0]?.delta?.content || '';
+                if (text) {
+                  sseBody += `data: ${JSON.stringify({ text, provider: 'groq' })}\n\n`;
+                }
+              } catch (e) {}
+            }
           }
         }
       }
@@ -98,13 +150,18 @@ exports.handler = async (event, context) => {
       };
     } else {
       // Non-streaming response
-      const json = await groqResponse.json();
-      const text = json?.choices?.[0]?.message?.content || '';
+      const json = await response.json();
+      let text = '';
+      if (providerUsed === 'gemini') {
+        text = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      } else {
+        text = json?.choices?.[0]?.message?.content || '';
+      }
 
       return {
         statusCode: 200,
         headers: { ...headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, provider: 'groq' })
+        body: JSON.stringify({ text, provider: providerUsed })
       };
     }
   } catch (err) {
@@ -112,11 +169,46 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 500,
       headers: { ...headers, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: err.message || 'Groq AI service temporarily unavailable.' })
+      body: JSON.stringify({ error: err.message || 'AI service temporarily unavailable.' })
     };
   }
 };
 
+// Helper: Gemini API
+async function callGeminiAPI(messages, systemInstruction, stream, apiKey) {
+  const model = 'gemini-2.0-flash';
+  const apiEndpoint = stream ? 'streamGenerateContent?alt=sse&' : 'generateContent?';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:${apiEndpoint}key=${apiKey}`;
+
+  const body = {
+    system_instruction: {
+      parts: [{ text: systemInstruction || '' }]
+    },
+    contents: messages.map(m => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: m.content || '' }]
+    })),
+    generationConfig: {
+      temperature: 0.7,
+      maxOutputTokens: 4096,
+    }
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Gemini status ${response.status}: ${errText.slice(0, 150)}`);
+  }
+
+  return response;
+}
+
+// Helper: Groq API
 async function callGroqAPI(messages, systemInstruction, stream, apiKey) {
   const url = 'https://api.groq.com/openai/v1/chat/completions';
   const formattedMessages = [];
@@ -151,7 +243,7 @@ async function callGroqAPI(messages, systemInstruction, stream, apiKey) {
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Groq API error ${response.status}: ${errText.slice(0, 150)}`);
+    throw new Error(`Groq status ${response.status}: ${errText.slice(0, 150)}`);
   }
 
   return response;

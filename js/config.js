@@ -185,6 +185,16 @@ const Config = (() => {
       throw new Error(errMessage);
     }
 
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const json = await response.json();
+      if (json.error) throw new Error(json.error);
+      if (json.text) {
+        yield json.text;
+        return;
+      }
+    }
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
