@@ -220,6 +220,51 @@ const Config = (() => {
     }
   }
 
+  function getStreak() {
+    const lastActive = get('aiacademy_last_active_date', null);
+    const streak = get('aiacademy_streak', 0);
+    if (!lastActive) return 0;
+    
+    const today = new Date().toDateString();
+    const lastDate = new Date(lastActive).toDateString();
+    
+    if (today === lastDate) {
+      return streak;
+    }
+    
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (lastDate === yesterday) {
+      return streak;
+    }
+    
+    // Streak broken if missing more than a day
+    return 0;
+  }
+
+  function recordActivity() {
+    const today = new Date().toDateString();
+    const lastActive = get('aiacademy_last_active_date', null);
+    let streak = get('aiacademy_streak', 0);
+
+    if (!lastActive) {
+      streak = 1;
+    } else {
+      const lastDate = new Date(lastActive).toDateString();
+      if (today !== lastDate) {
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        if (lastDate === yesterday) {
+          streak += 1;
+        } else {
+          streak = 1;
+        }
+      }
+    }
+    
+    set('aiacademy_last_active_date', Date.now());
+    set('aiacademy_streak', streak);
+    return streak;
+  }
+
   return {
     STORAGE_KEYS,
     MODEL,
@@ -229,6 +274,8 @@ const Config = (() => {
     getDifficulty, setDifficulty,
     getSettings, setSetting,
     getSession, updateSession, incrementStat,
+    getStreak, recordActivity,
     callGemini, streamGemini,
   };
 })();
+

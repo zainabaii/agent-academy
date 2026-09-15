@@ -66,13 +66,16 @@ const Career = (() => {
     const path = CAREER_PATHS.find(p => p.id === pathId) || CAREER_PATHS[0];
     const progressData = Progress.getProgressData();
     const userSkills = progressData.skills || {};
+    const completedProjects = progressData.completedProjects || [];
 
-    let totalScore = 0;
+    let totalTechnicalScore = 0;
+    let evaluatedCount = 0;
     const skillBreakdown = [];
 
     path.requiredSkills.forEach(skillName => {
       const score = userSkills[skillName] || 0;
-      totalScore += score;
+      if (score > 0) evaluatedCount++;
+      totalTechnicalScore += score;
       skillBreakdown.push({
         skill: skillName,
         score: score,
@@ -80,10 +83,24 @@ const Career = (() => {
       });
     });
 
-    const averageReadiness = Math.round(totalScore / path.requiredSkills.length);
+    const hasData = evaluatedCount > 0 || completedProjects.length > 0;
+    const technicalPct = path.requiredSkills.length > 0 ? Math.round(totalTechnicalScore / path.requiredSkills.length) : 0;
+    const projectPct = Math.min(100, completedProjects.length * 35);
+    const interviewPct = interviewState.evaluations.length > 0 
+      ? Math.round(interviewState.evaluations.reduce((acc, c) => acc + (c.score || 0), 0) / interviewState.evaluations.length)
+      : 0;
+
+    const overallReadiness = hasData 
+      ? Math.round((technicalPct * 0.5) + (projectPct * 0.3) + (interviewPct * 0.2))
+      : 0;
+
     return {
       path,
-      readinessPct: averageReadiness,
+      hasData,
+      overallReadiness,
+      technicalPct,
+      projectPct,
+      interviewPct,
       skillsHave: skillBreakdown.filter(s => s.acquired),
       skillsToDevelop: skillBreakdown.filter(s => !s.acquired),
     };
@@ -105,23 +122,54 @@ const Career = (() => {
               </div>
               <div>
                 <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 2px;">${path.title}</h3>
-                <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Est. Range: ${path.salaryRange}</span>
+                <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Est. Salary: ${path.salaryRange}</span>
               </div>
             </div>
             <div style="text-align: right;">
-              <span class="badge ${readiness.readinessPct >= 70 ? 'badge-success' : readiness.readinessPct >= 40 ? 'badge-warning' : 'badge-muted'}" style="font-size: 0.85rem; padding: 4px 12px;">
-                ${readiness.readinessPct}% Readiness
-              </span>
+              ${readiness.hasData ? `
+                <span class="badge ${readiness.overallReadiness >= 70 ? 'badge-success' : readiness.overallReadiness >= 40 ? 'badge-warning' : 'badge-muted'}" style="font-size: 0.85rem; padding: 4px 12px;">
+                  ${readiness.overallReadiness}% Career Readiness
+                </span>
+              ` : `
+                <span class="badge badge-muted" style="font-size: 0.85rem; padding: 4px 12px;">
+                  Not assessed yet
+                </span>
+              `}
             </div>
           </div>
 
           <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 16px;">${path.description}</p>
 
-          <!-- Readiness Progress Bar -->
-          <div class="progress-bar-wrap" style="margin-bottom: 16px;">
-            <div class="progress-bar-track">
-              <div class="progress-bar-fill" style="width: ${readiness.readinessPct}%;"></div>
+          <!-- Visual Career Readiness Sub-Breakdown -->
+          <div style="background: var(--bg-surface-subtle); border-radius: var(--radius-lg); padding: 14px 16px; border: 1px solid var(--border); margin-bottom: 16px;">
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;">
+              Visual Career Readiness Indicator
             </div>
+            ${readiness.hasData ? `
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 10px;">
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--text-secondary);">Technical Skills</div>
+                  <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">${readiness.technicalPct}%</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--text-secondary);">Projects Portfolio</div>
+                  <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent);">${readiness.projectPct}%</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--text-secondary);">Interview Score</div>
+                  <div style="font-size: 1.1rem; font-weight: 700; color: var(--success);">${readiness.interviewPct}%</div>
+                </div>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill" style="width: ${readiness.overallReadiness}%;"></div>
+                </div>
+              </div>
+            ` : `
+              <div style="font-size: 0.85rem; color: var(--text-muted);">
+                Not enough data yet. Complete your first assessment, project blueprint, or mock interview to calculate your career readiness score.
+              </div>
+            `}
           </div>
 
           <!-- Skills breakdown grid -->
@@ -142,7 +190,7 @@ const Career = (() => {
               </div>
               <ul style="list-style: none; padding: 0;">
                 ${readiness.skillsToDevelop.map(s => `
-                  <li style="font-size: 0.8rem; color: var(--text-secondary); padding: 2px 0;">• ${s.skill} (${s.score}%)</li>
+                  <li style="font-size: 0.8rem; color: var(--text-secondary); padding: 2px 0;">• ${s.skill} (${s.score > 0 ? s.score + '%' : '0%'})</li>
                 `).join('')}
               </ul>
             </div>
@@ -153,7 +201,7 @@ const Career = (() => {
               🎤 Start AI Interview →
             </button>
             <button class="btn btn-secondary btn-sm" onclick="Projects.generateForCareer('${path.title}')">
-              🛠️ Generate Project
+              🛠️ Generate Recommended Project
             </button>
           </div>
         </div>

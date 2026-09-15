@@ -1,12 +1,19 @@
 {
   "name": "agent.academyy",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "AI Academy — Your Personal AI Learning & Career Agent",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "echo \"Static site: No build step required for Netlify publish.\" && exit 0",
+    "test": "node -c server.js netlify/functions/chat.js netlify/functions/visitor-notification.js js/config.js js/agents.js js/quiz.js js/progress.js js/career.js js/projects.js js/ui.js js/app.js"
   },
-  "keywords": [],
+  "keywords": [
+    "ai-academy",
+    "learning-agent",
+    "career-agent"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",

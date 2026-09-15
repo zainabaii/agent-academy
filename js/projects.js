@@ -103,19 +103,31 @@ const Projects = (() => {
   }
 
   function renderProjectCard(project) {
+    const profile = Config.getProfile();
+    const userGoal = profile.goal || 'AI Engineering';
+
     return `
       <div class="card" style="margin-bottom: 20px;" id="project-card-${project.id}">
         <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
           <div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
               <span class="badge badge-indigo">${project.category || 'AI Project'}</span>
               <span class="badge badge-muted">${project.difficulty} • ~${project.estimatedHours} hrs</span>
             </div>
-            <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-top: 4px;">${project.title}</h3>
+            <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-top: 2px;">${project.title}</h3>
           </div>
           <button class="btn btn-primary btn-sm" onclick="Projects.addToRoadmap('${project.title}')">
-            + Add to Roadmap
+            + Save to Progress
           </button>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: var(--radius-md); padding: 12px 16px; border: 1px solid var(--primary-border); margin-bottom: 14px;">
+          <div style="font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.04em;">
+            ⚡ WHY RECOMMENDED FOR YOU (${userGoal})
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-primary); margin-top: 4px; font-weight: 500;">
+            ${project.whyItMatters || `Strengthens your core skills required for ${userGoal}.`}
+          </div>
         </div>
 
         <div style="background: var(--bg-surface-subtle); border-radius: var(--radius-md); padding: 12px 16px; border: 1px solid var(--border); margin-bottom: 14px;">

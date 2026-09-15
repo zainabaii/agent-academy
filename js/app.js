@@ -62,8 +62,15 @@ function checkVisitorNotification() {
 
 function handleVisitorSubmit(e) {
   e.preventDefault();
-  const input = document.getElementById('visitor-name-input');
-  const name = (input?.value || '').trim();
+  const nameInput = document.getElementById('visitor-name-input');
+  const catInput  = document.getElementById('visitor-category-input');
+  const lvlInput  = document.getElementById('visitor-level-input');
+  const goalInput = document.getElementById('visitor-goal-input');
+
+  const name = (nameInput?.value || '').trim();
+  const type = catInput?.value || 'jobseeker';
+  const level = lvlInput?.value || 'intermediate';
+  const goal = (goalInput?.value || '').trim() || 'AI Engineer';
 
   if (!name || name.length < 2 || name.length > 50) {
     UI.toast('Please enter a valid name (2-50 characters)', 'error');
@@ -73,15 +80,26 @@ function handleVisitorSubmit(e) {
   const sanitizedName = name.replace(/[<>&"']/g, '');
 
   // Update user profile and storage
-  Config.setProfile({ name: sanitizedName });
+  Config.setProfile({
+    name: sanitizedName,
+    type: type,
+    level: level,
+    goal: goal
+  });
+
+  if (typeof Config.recordActivity === 'function') {
+    Config.recordActivity();
+  }
+
   localStorage.setItem('aiacademy_visitor_notified', 'true');
   UI.updateHeaderProfile();
+  UI.renderDashboardWidgets();
 
   // Hide modal
   const modal = document.getElementById('visitor-modal');
   if (modal) modal.style.display = 'none';
 
-  UI.toast(`Welcome to AI Academy, ${sanitizedName}!`, 'info', 2000);
+  UI.toast(`Welcome to AI Academy, ${sanitizedName}! Your goal is set to ${goal}.`, 'info', 3000);
 
   // Send email notification asynchronously in background
   fetch('/api/visitor-notification', {
@@ -89,7 +107,8 @@ function handleVisitorSubmit(e) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       visitorName: sanitizedName,
-      pageUrl: window.location.href
+      pageUrl: window.location.href,
+      visitorGoal: goal
     })
   })
   .then(res => res.json())
@@ -288,17 +307,33 @@ async function handleChatSubmit(e) {
   let currentMsgId = null;
 
   try {
+    if (typeof Config.recordActivity === 'function') {
+      Config.recordActivity();
+    }
+
+    const agentActivityMessages = {
+      assessment: 'Checking your current skill level...',
+      courseAdvisor: 'Finding optimal learning paths...',
+      roadmap: 'Building your personalized roadmap...',
+      project: 'Matching career project blueprints...',
+      career: 'Evaluating career readiness & goals...',
+      support: 'Analyzing your learning goal & path...',
+      explainer: 'Synthesizing educational explanation...',
+      quizMaster: 'Generating targeted quiz questions...'
+    };
+
     const result = await Agents.orchestrate(text, conversationHistory, {
       onQueueReady(agentQueue) {
         UI.highlightActiveAgents(agentQueue);
       },
 
       onAgentStart(agentId, agentDef) {
-        UI.setAgentStatus(agentId, 'thinking', `Analyzing query...`);
+        const msgText = agentActivityMessages[agentId] || 'Processing step...';
+        UI.setAgentStatus(agentId, 'thinking', msgText);
         UI.removeTypingIndicator();
 
         currentMsgId = UI.addAIMessage(agentId);
-        UI.setAgentStatus(agentId, 'working', 'Generating answer...');
+        UI.setAgentStatus(agentId, 'working', msgText);
       },
 
       onToken(token, agentId) {
@@ -315,7 +350,7 @@ async function handleChatSubmit(e) {
             UI.finalizeMessage(currentMsgId);
           }
         }
-        UI.setAgentStatus(agentId, 'done', 'Completed');
+        UI.setAgentStatus(agentId, 'done', 'Recommendation ready.');
 
         if (responseText && responseText.trim()) {
           conversationHistory.push({ role: 'assistant', content: responseText });

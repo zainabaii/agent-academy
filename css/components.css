@@ -375,3 +375,20 @@
   background: var(--bg-base);
 }
 
+/* ── Agent Workflow Pipeline Stepper ────────────────────────── */
+.wf-step {
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+.wf-step.active {
+  background: var(--primary-light);
+  border-color: var(--primary-border);
+  color: var(--primary);
+  box-shadow: 0 0 8px rgba(79, 70, 229, 0.15);
+}
+
+

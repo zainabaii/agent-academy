@@ -333,13 +333,22 @@ const UI = (() => {
 
   function updateSessionStats() {
     const session = Config.getSession();
+    const streak = Config.getStreak ? Config.getStreak() : 0;
     const msgCountEl = document.getElementById('stat-messages');
     const quizCountEl = document.getElementById('stat-quizzes');
     const progressEl = document.getElementById('stat-overall-progress');
+    const streakEl = document.getElementById('stat-streak');
+
     if (msgCountEl) msgCountEl.textContent = session.messagesCount || 0;
     if (quizCountEl) quizCountEl.textContent = session.quizzesTaken || 0;
+    
     if (progressEl && typeof Progress !== 'undefined') {
-      progressEl.textContent = (Progress.getOverallProgress() || 0) + '%';
+      const overall = Progress.getOverallProgress ? Progress.getOverallProgress() : 0;
+      progressEl.textContent = overall > 0 ? `${overall}%` : 'Not assessed yet';
+    }
+    
+    if (streakEl) {
+      streakEl.textContent = streak > 0 ? `${streak} ${streak === 1 ? 'day' : 'days'}` : 'Start learning';
     }
   }
 
@@ -349,9 +358,14 @@ const UI = (() => {
     const avatarEl = document.getElementById('header-avatar');
     const nameEl   = document.getElementById('header-name');
     const welcomeNameEl = document.getElementById('landing-welcome-name');
+    const subtitleEl = document.getElementById('landing-journey-subtitle');
+
     if (avatarEl) avatarEl.textContent = initials;
     if (nameEl)   nameEl.textContent   = profile.name;
     if (welcomeNameEl) welcomeNameEl.textContent = profile.name || 'Learner';
+    if (subtitleEl && profile.goal) {
+      subtitleEl.textContent = `Goal: ${profile.goal} • Level: ${profile.level || 'Intermediate'}`;
+    }
   }
 
   function addChatHistoryItem(title) {
@@ -397,12 +411,12 @@ const UI = (() => {
 
     const welcomeText = `### Welcome to AI Academy${name ? ', ' + name : ''} 👋
 
-I am your **AI Learning Assistant**. I can help you understand academic concepts, generate step-by-step learning roadmaps, create practice quizzes, and prepare for exams and technical careers.
+I am your **AI Learning & Career Agent**. I can help you evaluate your skills, build customized learning roadmaps, construct hands-on projects, and practice for technical interviews.
 
-**What would you like to learn today?**
-- *"Explain Newton's second law of motion with formula and numerical example"*
-- *"I want to become a Software Engineer — create a learning roadmap"*
-- *"Give me a 5-question quiz on Python fundamentals"*`;
+**What would you like to accomplish today?**
+- *"Explain REST APIs and HTTP status codes"*
+- *"I want to become an AI Engineer — create my skill roadmap"*
+- *"Test my knowledge with a 5-question quiz"*`;
 
     appendToMessage(msgId, welcomeText);
     finalizeMessage(msgId);
@@ -432,30 +446,71 @@ I am your **AI Learning Assistant**. I can help you understand academic concepts
   // ── Dashboard Widgets ("WHAT SHOULD I DO NEXT?") ─────────────
   function renderDashboardWidgets() {
     const nextWidgetEl = document.getElementById('dashboard-next-step-widget');
-    if (!nextWidgetEl) return;
+    const journeyEl = document.getElementById('dashboard-active-journey');
+    const profile = Config.getProfile();
 
-    const scan = Progress.generateSkillScan();
-    const next = scan.nextStep;
+    if (nextWidgetEl && typeof Progress !== 'undefined') {
+      const next = Progress.getWhatShouldIDoNext ? Progress.getWhatShouldIDoNext() : Progress.generateSkillScan().nextStep;
 
-    nextWidgetEl.innerHTML = `
-      <div style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border: 1.5px solid var(--primary-border); border-radius: var(--radius-xl); padding: 20px 24px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;">
-        <div style="position: absolute; right: -10px; top: -10px; font-size: 5rem; opacity: 0.08; pointer-events: none; font-weight: 800; color: var(--primary);">
-          NEXT
+      nextWidgetEl.innerHTML = `
+        <div style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border: 1.5px solid var(--primary-border); border-radius: var(--radius-xl); padding: 22px 26px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;">
+          <div style="position: absolute; right: -10px; top: -10px; font-size: 5.5rem; opacity: 0.06; pointer-events: none; font-weight: 900; color: var(--primary);">
+            NEXT
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em;">
+              <span>⚡</span> <span>SIGNATURE FEATURE: WHAT SHOULD I DO NEXT?</span>
+            </div>
+            <span class="badge badge-indigo" style="font-size:0.75rem;">AI Recommendation</span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">
+            ${escapeHtml(next.title)}
+          </h3>
+
+          <div style="background: rgba(255, 255, 255, 0.75); border-radius: var(--radius-md); padding: 10px 14px; border: 1px solid var(--primary-border); margin-bottom: 14px; font-size: 0.825rem; color: var(--text-primary);">
+            <span style="font-weight: 700; color: var(--primary);">WHY THIS?</span> — ${escapeHtml(next.whyThis || next.description)}
+          </div>
+
+          <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 16px; max-width: 680px;">
+            ${escapeHtml(next.description)}
+          </p>
+
+          <button class="btn btn-primary" onclick="${next.actionPrompt ? `UI.sendMessage('${next.actionPrompt}')` : `UI.switchView('${next.actionView || 'chat'}')`}">
+            ${escapeHtml(next.actionText || 'Start Now →')}
+          </button>
         </div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">
-          <span>⚡</span> <span>WHAT SHOULD I DO NEXT? — AI RECOMMENDATION</span>
+      `;
+    }
+
+    if (journeyEl) {
+      const data = Progress.getProgressData();
+      const userGoal = profile.goal || 'AI & Software Engineering';
+      const completedCount = data.completedTopics.length;
+
+      journeyEl.innerHTML = `
+        <div class="card" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 240px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span class="badge badge-indigo">Connected Journey</span>
+              <span style="font-size:0.78rem;color:var(--text-muted);font-weight:600;">Target Goal: ${escapeHtml(userGoal)}</span>
+            </div>
+            <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 4px;">
+              LEARN → PRACTICE → ASSESS → IMPROVE → BUILD → PREPARE → ADVANCE
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+              ${completedCount > 0 ? `${completedCount} topics completed towards your career goal.` : 'Begin your journey by completing your first topic review or skill assessment.'}
+            </p>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" style="width: ${Math.max(10, Math.min(100, (completedCount * 20) + (Progress.getOverallProgress() * 0.8)))}%;"></div>
+            </div>
+          </div>
+          <button class="btn btn-secondary" onclick="UI.switchView('roadmap');">
+            View Roadmap →
+          </button>
         </div>
-        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
-          ${escapeHtml(next.title)}
-        </h3>
-        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 14px; max-width: 640px;">
-          ${escapeHtml(next.description)}
-        </p>
-        <button class="btn btn-primary btn-sm" onclick="${next.actionPrompt ? `UI.sendMessage('${next.actionPrompt}')` : `UI.switchView('${next.actionView || 'chat'}')`}">
-          ${escapeHtml(next.actionText)}
-        </button>
-      </div>
-    `;
+      `;
+    }
 
     updateSessionStats();
   }

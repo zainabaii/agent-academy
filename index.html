@@ -140,6 +140,11 @@
           <span>AI Project Builder</span>
         </button>
 
+        <button class="sidebar-nav-item" data-view="interview" id="nav-interview">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          <span>AI Mock Interview</span>
+        </button>
+
         <button class="sidebar-nav-item" data-view="progress" id="nav-progress">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           <span>Progress Center</span>
@@ -158,7 +163,15 @@
       </div>
 
       <!-- Footer Settings & Profile -->
-      <div class="sidebar-footer">
+      <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md); border: 1px solid var(--border-sidebar);">
+          <div id="header-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: #FFF; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">LE</div>
+          <div style="overflow: hidden;">
+            <div id="header-name" style="font-weight: 600; font-size: 0.825rem; color: var(--text-sidebar); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Learner</div>
+            <div style="font-size: 0.7rem; color: var(--text-sidebar-muted);">Active Learner</div>
+          </div>
+        </div>
+
         <button class="sidebar-nav-item" data-view="settings" id="nav-settings">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           <span>Settings</span>
@@ -178,7 +191,7 @@
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
             <div>
               <h1 style="font-size:1.75rem;margin-bottom:4px;">Good day, <span id="landing-welcome-name">Learner</span> 👋</h1>
-              <p style="color:var(--text-secondary);font-size:0.95rem;">Ready to continue your AI learning and career journey?</p>
+              <p style="color:var(--text-secondary);font-size:0.95rem;" id="landing-journey-subtitle">AI ACADEMY — Your Personal AI Learning & Career Agent</p>
             </div>
             <button class="btn btn-primary" onclick="UI.switchView('chat')">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -191,16 +204,18 @@
 
           <!-- Central AI Command Bar Card -->
           <div class="card" style="margin-bottom:32px;">
-            <div class="label" style="margin-bottom:12px;">AI Command Center</div>
+            <div class="label" style="margin-bottom:12px;">What should I help you accomplish today?</div>
             <form id="landing-form">
               <div style="display:flex;flex-direction:column;gap:12px;">
-                <textarea id="landing-input" placeholder="What do you want to learn or accomplish today? (e.g. 'Explain Python decorators', 'Create a 5-question quiz', 'Generate an AI project')" rows="2" style="width:100%;border:1.5px solid var(--border-dark);border-radius:var(--radius-lg);padding:14px 16px;outline:none;resize:none;font-family:inherit;font-size:0.95rem;background:var(--bg-surface);"></textarea>
+                <textarea id="landing-input" placeholder="Type an instruction or question (e.g. 'Explain REST API principles', 'Generate an AI project blueprint', 'Test my knowledge with a quiz')" rows="2" style="width:100%;border:1.5px solid var(--border-dark);border-radius:var(--radius-lg);padding:14px 16px;outline:none;resize:none;font-family:inherit;font-size:0.95rem;background:var(--bg-surface);"></textarea>
                 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
                   <div style="display:flex;gap:8px;flex-wrap:wrap;">
                     <button type="button" class="btn btn-secondary btn-sm" onclick="UI.sendMessage('Explain key AI concepts in simple terms')">Explain Concept</button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="UI.sendMessage('Create a personalized learning roadmap for AI Engineer')">Create Roadmap</button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="UI.sendMessage('Test my knowledge with a 5-question quiz')">Test My Knowledge</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="UI.switchView('assessment')">Assess My Skills</button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="UI.switchView('weak-areas')">Find Weak Areas</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="UI.switchView('project-builder')">Build a Project</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="UI.switchView('interview')">Practice Interview</button>
                   </div>
                   <button type="submit" class="btn btn-primary">Ask AI Agent →</button>
                 </div>
@@ -213,7 +228,7 @@
             <div class="stat-card">
               <div class="stat-card-icon">⚡</div>
               <div>
-                <div class="stat-card-val" id="stat-overall-progress">0%</div>
+                <div class="stat-card-val" id="stat-overall-progress" style="font-size:1.15rem;">Not assessed yet</div>
                 <div class="stat-card-lbl">Overall Skill Mastery</div>
               </div>
             </div>
@@ -227,7 +242,7 @@
             <div class="stat-card">
               <div class="stat-card-icon">🔥</div>
               <div>
-                <div class="stat-card-val">5 days</div>
+                <div class="stat-card-val" id="stat-streak" style="font-size:1.15rem;">Start learning</div>
                 <div class="stat-card-lbl">Current Streak</div>
               </div>
             </div>
@@ -240,20 +255,8 @@
             </div>
           </div>
 
-          <!-- Continue Learning Card -->
-          <div class="card" style="margin-bottom:32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 240px;">
-              <span class="badge badge-indigo" style="margin-bottom: 8px;">Active Topic</span>
-              <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 4px;">Agentic AI & Multi-Agent Systems</h3>
-              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">Stage 5 of your personalized AI Engineering roadmap.</p>
-              <div class="progress-bar-track">
-                <div class="progress-bar-fill" style="width: 72%;"></div>
-              </div>
-            </div>
-            <button class="btn btn-primary" onclick="UI.switchView('chat'); UI.sendMessage('Continue learning Agentic AI architecture');">
-              Continue Learning →
-            </button>
-          </div>
+          <!-- Dynamic Active Journey / Goal Progress Card -->
+          <div id="dashboard-active-journey"></div>
 
         </div>
       </section>
@@ -557,6 +560,16 @@
                 <option value="university">University Student</option>
                 <option value="jobseeker">Job Seeker</option>
                 <option value="teacher">Teacher</option>
+                <option value="learner">General Learner</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <label class="label" for="setting-level">Target Experience Level</label>
+              <select class="input-field" id="setting-level">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
               </select>
             </div>
 
@@ -599,20 +612,43 @@
     <div class="drawer-content">
       <div class="drawer-header">
         <div>
-          <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">⚡ Agent Activity</div>
-          <div style="font-size:0.75rem;color:var(--text-secondary);">Specialized multi-agent orchestration</div>
+          <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">⚡ Agent Workflow Activity</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary);">Real-Time Multi-Agent Routing & Pipeline Orchestration</div>
         </div>
         <button class="drawer-close-btn" onclick="UI.toggleAgentDrawer(false)">✕</button>
       </div>
+      
+      <!-- Visual Workflow Pipeline Diagram -->
+      <div style="padding: 14px 16px; background: var(--bg-surface-subtle); border-bottom: 1px solid var(--border);">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
+          Agentic Orchestration Pipeline
+        </div>
+        <div class="agent-workflow-stepper" style="display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: 0.7rem; color: var(--text-secondary); text-align: center; flex-wrap: wrap;">
+          <span class="wf-step active" id="wf-step-input">User Request</span>
+          <span>➔</span>
+          <span class="wf-step" id="wf-step-profile">Profile</span>
+          <span>➔</span>
+          <span class="wf-step" id="wf-step-skill">Skills</span>
+          <span>➔</span>
+          <span class="wf-step" id="wf-step-assess">Assess</span>
+          <span>➔</span>
+          <span class="wf-step" id="wf-step-roadmap">Roadmap</span>
+          <span>➔</span>
+          <span class="wf-step" id="wf-step-career">Career</span>
+          <span>➔</span>
+          <span class="wf-step" id="wf-step-result">Action</span>
+        </div>
+      </div>
+
       <div class="drawer-body" id="agent-cards"></div>
     </div>
   </div>
 
-  <!-- ─── VISITOR WELCOME MODAL ──────────────────────────────── -->
+  <!-- ─── VISITOR WELCOME ONBOARDING MODAL ────────────────────── -->
   <div class="modal-overlay" id="visitor-modal" style="display:none;" role="dialog" aria-labelledby="visitor-modal-title" aria-modal="true">
-    <div class="modal-box" style="max-width: 440px;">
-      <div style="text-align: center; margin-bottom: 24px;">
-        <div style="width: 56px; height: 56px; background: var(--bg-sidebar); border-radius: var(--radius-xl); display: inline-flex; align-items: center; justify-content: center; color: #FFFFFF; margin-bottom: 14px; border: 1px solid var(--border-sidebar); box-shadow: 0 4px 12px rgba(14, 26, 51, 0.2);">
+    <div class="modal-box" style="max-width: 480px;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="width: 56px; height: 56px; background: var(--bg-sidebar); border-radius: var(--radius-xl); display: inline-flex; align-items: center; justify-content: center; color: #FFFFFF; margin-bottom: 12px; border: 1px solid var(--border-sidebar); box-shadow: 0 4px 12px rgba(14, 26, 51, 0.2);">
           <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16 4L5 26H10.2L13.5 19.2H18.5L21.8 26H27L16 4Z" fill="url(#modal-logo-grad)" />
             <path d="M14.6 16.8H17.4L16 13.6L14.6 16.8Z" fill="#FFFFFF" />
@@ -627,18 +663,45 @@
             </defs>
           </svg>
         </div>
-        <h3 id="visitor-modal-title" style="font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Welcome to AI Academy</h3>
-        <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">Tell us your name to personalize your intelligent learning workspace.</p>
+        <h3 id="visitor-modal-title" style="font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Welcome to AI Academy</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">Your Personal AI Learning & Career Agent. Let's personalize your starting path.</p>
       </div>
 
       <form id="visitor-welcome-form" onsubmit="handleVisitorSubmit(event)">
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 14px;">
           <label for="visitor-name-input" class="label">Your Full Name</label>
           <input type="text" id="visitor-name-input" class="input-field" placeholder="e.g. Zainab" required minlength="2" maxlength="50" autocomplete="name" />
         </div>
 
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <div>
+            <label for="visitor-category-input" class="label">Profile Category</label>
+            <select id="visitor-category-input" class="input-field">
+              <option value="student">School Student</option>
+              <option value="college">College Student</option>
+              <option value="university">University Student</option>
+              <option value="jobseeker" selected>Job Seeker</option>
+              <option value="teacher">Teacher</option>
+              <option value="learner">General Learner</option>
+            </select>
+          </div>
+          <div>
+            <label for="visitor-level-input" class="label">Current Experience</label>
+            <select id="visitor-level-input" class="input-field">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate" selected>Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label for="visitor-goal-input" class="label">Primary Career / Learning Goal</label>
+          <input type="text" id="visitor-goal-input" class="input-field" placeholder="e.g. Become an AI Engineer" required />
+        </div>
+
         <button type="submit" class="btn btn-primary" id="visitor-submit-btn" style="width: 100%; padding: 12px; font-weight: 700; font-size: 0.925rem;">
-          Continue to AI Academy →
+          Start My AI Journey →
         </button>
       </form>
     </div>

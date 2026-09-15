@@ -287,40 +287,101 @@ const Progress = (() => {
     }
   }
 
+  function getOverallProgress() {
+    const data = getProgressData();
+    const skills = data.skills || {};
+    const entries = Object.entries(skills);
+    
+    // Filter only skills that have been evaluated (> 0)
+    const evaluated = entries.filter(([, score]) => score > 0);
+    if (evaluated.length === 0) return 0;
+    
+    const sum = evaluated.reduce((acc, [, score]) => acc + score, 0);
+    return Math.round(sum / evaluated.length);
+  }
+
+  function getWhatShouldIDoNext() {
+    const profile = Config.getProfile();
+    const data = getProgressData();
+    const session = Config.getSession();
+    const skills = data.skills || {};
+    const skillEntries = Object.entries(skills);
+    const evaluatedSkills = skillEntries.filter(([, score]) => score > 0);
+    const weakAreas = evaluatedSkills.filter(([, score]) => score < 60);
+
+    // Case 1: Brand new user or no goal specified
+    if (!profile.goal || profile.goal === 'Not specified') {
+      return {
+        title: "Set Your Primary Learning & Career Goal",
+        whyThis: "AI Academy tailors roadmaps, quizzes, and project recommendations to your exact career objective.",
+        description: "Choose whether you want to become an AI Engineer, Software Developer, Data Scientist, or pursue academic excellence.",
+        actionText: "Set My Goal →",
+        actionView: "settings",
+        hasData: false
+      };
+    }
+
+    // Case 2: Goal set, but 0 assessments/quizzes taken
+    if (evaluatedSkills.length === 0 && (session.quizzesTaken || 0) === 0) {
+      return {
+        title: "Take Your First Skill Assessment",
+        whyThis: `You haven't assessed your skills for your goal: "${profile.goal}". A baseline assessment identifies your current level and knowledge gaps.`,
+        description: "Complete a 5-minute diagnostic quiz covering technical knowledge and problem solving.",
+        actionText: "Start Assessment →",
+        actionView: "assessment",
+        hasData: false
+      };
+    }
+
+    // Case 3: Detected Weak Area needing improvement
+    if (weakAreas.length > 0) {
+      const topWeakness = weakAreas[0];
+      return {
+        title: `Improve Your Weak Area: ${topWeakness[0]}`,
+        whyThis: `Your recent score in ${topWeakness[0]} is ${topWeakness[1]}%, which is below the 60% mastery threshold required for ${profile.goal}.`,
+        description: `Review key concepts and take targeted practice questions to boost your mastery score in ${topWeakness[0]}.`,
+        actionText: `Practice ${topWeakness[0]} →`,
+        actionPrompt: `Help me practice and master ${topWeakness[0]}`,
+        hasData: true
+      };
+    }
+
+    // Case 4: Skills assessed & strong, but 0 projects built
+    if (data.completedProjects.length === 0) {
+      return {
+        title: "Build Your First Hands-On AI Project",
+        whyThis: `You have completed topic reviews and quizzes. Constructing a resume-ready project proves practical execution for ${profile.goal}.`,
+        description: "Select a guided project blueprint with step-by-step implementation tasks and tech stack.",
+        actionText: "Explore Projects →",
+        actionView: "project-builder",
+        hasData: true
+      };
+    }
+
+    // Case 5: Projects built, move to Interview Prep
+    return {
+      title: "Practice AI Technical Mock Interview",
+      whyThis: `Your profile has mastered skills and project experience. Real-time interview simulation will prepare you for technical job questions.`,
+      description: "Answer technical questions tailored to your role with instant AI feedback on communication and accuracy.",
+      actionText: "Start Interview Simulation →",
+      actionView: "interview",
+      hasData: true
+    };
+  }
+
   function generateSkillScan() {
     const data = getProgressData();
     const skills = data.skills || {};
     const skillEntries = Object.entries(skills);
     
-    const hasData = skillEntries.some(([, score]) => score > 0) || data.completedTopics.length > 0;
+    const evaluated = skillEntries.filter(([, score]) => score > 0);
+    const hasData = evaluated.length > 0 || data.completedTopics.length > 0;
     
     const overallScore = getOverallProgress();
     const strengths = skillEntries.filter(([, score]) => score >= 65).map(([name, score]) => ({ name, score }));
     const weakAreas = skillEntries.filter(([, score]) => score > 0 && score < 65).map(([name, score]) => ({ name, score }));
     
-    let nextStep = {
-      title: 'Take Your First Skill Assessment',
-      description: 'Complete a quiz or assessment to unlock your personalized AI Skill Scan.',
-      actionText: 'Start Assessment →',
-      actionView: 'assessment'
-    };
-
-    if (weakAreas.length > 0) {
-      const topWeakness = weakAreas[0];
-      nextStep = {
-        title: `Practice ${topWeakness.name} (${topWeakness.score}% mastery)`,
-        description: `Your recent assessment shows that ${topWeakness.name} needs improvement to reach optimal readiness.`,
-        actionText: `Practice ${topWeakness.name} →`,
-        actionPrompt: `Help me practice and improve my ${topWeakness.name} skills`
-      };
-    } else if (hasData) {
-      nextStep = {
-        title: 'Advance to the Next Roadmap Stage',
-        description: 'You have mastered your current topics! Move to the next module on your AI Engineering path.',
-        actionText: 'Open Roadmap →',
-        actionView: 'roadmap'
-      };
-    }
+    const nextStep = getWhatShouldIDoNext();
 
     return {
       overallScore,
@@ -344,7 +405,9 @@ const Progress = (() => {
     renderProgressDashboard,
     generateSkillScan,
     getOverallProgress,
+    getWhatShouldIDoNext,
     DEFAULT_SKILLS,
     DEFAULT_ROADMAP,
   };
 })();
+
